@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 
 // components
 import Countries from "./Countries";
@@ -16,36 +16,39 @@ import Alert from "@material-ui/lab/Alert";
 // typescript interface types
 import { StateUpdateFormValues } from "../../interface/types";
 // router -- next
-import Router, { useRouter } from "next/router";
+import Router from "next/router";
 // actions
-import { update, getUser } from "../../actions/user";
-import { isAuth, authenticate, getCookie } from "../../actions/cookies";
+import { getUser, update } from "../../actions/user";
+import { isAuth, authenticate } from "../../actions/cookies";
 import { API } from "../../config";
 
 // theme custom
 import { useStyles } from "../../theme/theme";
-import useSWR from "swr";
+
+// context
+import { AuthContext } from "../../contexts/AuthContext";
 
 const UpdateForm: React.FC<any> = ({ handleCloseEdit }: any) => {
   const classes = useStyles();
-  const router = useRouter();
-  const url = `${API}/api/user/${router.query.username}`;
-  const { data, errors, mutate } = useSWR(url, async (url) => {
-    const response = await fetch(url);
-    const data = await response.json();
-    return data;
-  });
+
+  const { auth, setAuth } = useContext(AuthContext);
+  const data = getUser(`${API}/api/user/${auth?.username}`).data;
+
+  // const { data } = useSWR(url, async (url) => {
+  //   const response = await fetch(url);
+  //   const data = await response.json();
+  //   return data;
+  // });
+
   const initialValues = {
     username: `${data.user.username}`,
     email: `${data.user.email}`,
     description: `${data.user.description}`,
     country: `${data.user.country}`,
+    photo: `${data.user.photo}`,
     error: "",
     message: "",
   };
-  // useEffect(() => {
-  //   authenticate(data, () => {});
-  // }, [data.user.username]);
 
   const [formData, setFormData] = useState<StateUpdateFormValues>(
     initialValues
@@ -57,7 +60,15 @@ const UpdateForm: React.FC<any> = ({ handleCloseEdit }: any) => {
   const closeModalEdit = () => {
     handleCloseEdit(false);
   };
-  const { username, email, country, description, error, message } = formData;
+  const {
+    username,
+    email,
+    country,
+    description,
+    photo,
+    error,
+    message,
+  } = formData;
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -69,27 +80,35 @@ const UpdateForm: React.FC<any> = ({ handleCloseEdit }: any) => {
       email,
       description,
       country,
+      photo,
     };
-    update(user).then((datas: any) => {
-      if (datas.error) {
-        setFormData({ ...formData, error: datas.error });
+
+    update(user).then((data: any) => {
+      console.log(data);
+      if (data.error) {
+        setFormData({ ...formData, error: data.error });
       } else {
-        authenticate(datas, () => {
+        authenticate(data, () => {
+          console.log(data);
+          setAuth({
+            username: username,
+            email: email,
+            password: isAuth().password,
+          });
+          Router.push(`/profile/${username}`);
           closeModalEdit();
         });
-
-        setFormData({
-          username: `${username}`,
-          email: `${email}`,
-          description: `${description}`,
-          country: `${country}`,
-          error: "",
-          message: data.message,
-        });
+        // setFormData({
+        //   username: username,
+        //   email: email,
+        //   description: description,
+        //   country: country,
+        //   error: "",
+        //   message: data.message,
+        // });
       }
     });
   };
-
   const showError = () =>
     error ? (
       <Alert variant="filled" severity="error">
@@ -107,7 +126,6 @@ const UpdateForm: React.FC<any> = ({ handleCloseEdit }: any) => {
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     setFormData({ ...formData, error: "", [name]: e.target.value });
-    mutate();
   };
 
   return (
@@ -130,6 +148,9 @@ const UpdateForm: React.FC<any> = ({ handleCloseEdit }: any) => {
       </Typography>
       <form autoComplete="off" noValidate onSubmit={handleSubmit}>
         <Grid container spacing={3} justify="center" alignItems="center">
+          <Grid xs={12} item>
+            <input name="photo" type="file" onChange={handleChange("photo")} />
+          </Grid>
           <Grid xs={12} item>
             <TextField
               InputLabelProps={{

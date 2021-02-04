@@ -1,10 +1,12 @@
 import React, { createContext } from "react";
 
 interface AuthContextType {
-  auth: boolean;
-  setAuth: React.Dispatch<React.SetStateAction<boolean>>;
+  auth: { id: string; username: string; email: string; password: string };
+  setAuth: React.Dispatch<
+    React.SetStateAction<{ username: string; email: string; password: string }>
+  >;
 }
 export const AuthContext = createContext<AuthContextType>({
-  auth: false,
-  setAuth: (auth: boolean) => auth,
+  auth: { id: "", username: "", email: "", password: "" },
+  setAuth: (auth: {}) => auth,
 });

@@ -30,7 +30,6 @@ export const useStyles = makeStyles((theme: Theme) =>
 const MenuSmall: React.FC = () => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -58,7 +57,12 @@ const MenuSmall: React.FC = () => {
         onClose={handleClose}
       >
         <MenuItem onClick={handleClose} className={classes.MenuItem}>
-          <Link href={`/profile/${isAuth()?.username}`}>PROFILE</Link>
+          <Link
+            href={`/profile/${isAuth().username}`}
+            style={{ color: "#1F2634" }}
+          >
+            PROFILE
+          </Link>
         </MenuItem>
         <MenuItem onClick={handleClose} className={classes.MenuItem}>
           ABOUT

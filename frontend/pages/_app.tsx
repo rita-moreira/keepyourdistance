@@ -16,14 +16,18 @@ import { ThemeProvider } from "@material-ui/core";
 import { theme, darkTheme } from "../theme/theme";
 
 // actions
-import { getCookie, isAuth } from "../actions/cookies";
+import { getCookie } from "../actions/cookies";
 
 function App({ Component, pageProps }: AppProps) {
   const themeCookie = getCookie("theme");
-  console.log(isAuth());
-  const [themeMode, setThemeMode] = useState<string>(`${themeCookie}`);
-
-  const [auth, setAuth] = useState<boolean>(isAuth());
+  const [themeMode, setThemeMode] = useState<string>(themeCookie);
+  const authCookie = getCookie("user");
+  const [auth, setAuth] = useState<{
+    id: string;
+    username: string;
+    email: string;
+    password: string;
+  }>(authCookie);
   return (
     <div>
       <ThemeContext.Provider value={{ themeMode, setThemeMode }}>

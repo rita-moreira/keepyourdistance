@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 
 // material ui
 import { Container, Grid, Link, Typography, Button } from "@material-ui/core";
@@ -20,6 +20,9 @@ import { authenticate, isAuth } from "../../actions/cookies";
 // router -- next
 import Router from "next/router";
 
+// context
+import { AuthContext } from "../../contexts/AuthContext";
+
 const initialValues = {
   email: "",
   password: "",
@@ -28,7 +31,7 @@ const initialValues = {
 };
 const LoginForm: React.FC = () => {
   const [formData, setFormData] = useState<StateLoginFormValues>(initialValues);
-
+  const { setAuth } = useContext(AuthContext);
   const classes = useStyles();
   const { email, password, error, message } = formData;
 
@@ -62,10 +65,14 @@ const LoginForm: React.FC = () => {
         setFormData({ ...formData, error: data.error });
       } else {
         // save user token to cookie
-        // save user info to localStorage
+        // save user info to cookie
         // authenticate user
+
         authenticate(data, () => {
-          Router.push(`/profile/${isAuth().username}`);
+          if (isAuth()) {
+            setAuth(isAuth());
+            Router.push(`/profile/${isAuth().username}`);
+          }
         });
       }
     });

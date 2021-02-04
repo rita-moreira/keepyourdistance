@@ -26,6 +26,7 @@ const LogButton: React.FC = () => {
       {auth ? (
         <Button
           className={classes.primaryButton}
+          href="/"
           onClick={() => signout(() => Router.replace("/"))}
         >
           LOGOUT

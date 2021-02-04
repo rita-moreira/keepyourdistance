@@ -8,7 +8,11 @@ export const setCookie = (key: string, value: string) => {
   const date = new Date();
   date.setDate(date.getDate() + 1);
 
-  cookies.set(key, value, { path: "/", expires: date });
+  cookies.set(key, value, {
+    path: "/",
+    expires: date,
+    domain: "localhost",
+  });
 };
 
 export const getCookie = (key: string) => {
@@ -16,14 +20,13 @@ export const getCookie = (key: string) => {
 };
 
 export const removeCookie = (key: string) => {
-  cookies.remove(key, { path: "/" });
+  cookies.remove(key, { path: "/", domain: "localhost" });
 };
 
 export const authenticate = (data: any, next: any) => {
   setCookie("token", data.token);
   setCookie("user", data.user);
 
-  console.log(getCookie("user"));
   next();
 };
 

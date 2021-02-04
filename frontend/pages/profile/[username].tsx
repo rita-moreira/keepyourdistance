@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { useRouter } from "next/router";
+import React, { useContext, useState } from "react";
 
 // actions
 import { getUser } from "../../actions/user";
@@ -20,16 +19,22 @@ import Modal from "@material-ui/core/Modal";
 
 // api url
 import { API } from "../../config";
-import { getCookie, isAuth, setCookie } from "../../actions/cookies";
+import { isAuth } from "../../actions/cookies";
+
+// context
+import { AuthContext } from "../../contexts/AuthContext";
 
 const Profile = () => {
   const classes = useStyles();
-  const router = useRouter();
-  const data = getUser(`${API}/api/user/${router.query.username}`).data;
-  const mutate = getUser(`${API}/api/user/${router.query.username}`).mutate;
+
+  const { auth } = useContext(AuthContext);
+
+  const data = getUser(`${API}/api/user/${auth?.username}`).data;
+  const mutate = getUser(`${API}/api/user/${auth?.username}`).mutate;
   const [openModalTask, setOpenModelTask] = useState(false);
   const [openModalEdit, setOpenModelEdit] = useState(false);
   mutate();
+  console.log(data);
 
   const handleClose = (close: any) => {
     setOpenModelTask(close);
@@ -40,6 +45,7 @@ const Profile = () => {
   if (!data || !data.user) {
     return <div>Loading...</div>;
   }
+  console.log(data.user.photo);
   return (
     <div className={classes.backgroundColor}>
       <Modal
@@ -73,6 +79,7 @@ const Profile = () => {
             username={data.user.username}
             description={data.user.description}
             country={data.user.country}
+            photo={data.user.photo}
           />
 
           {isAuth() && isAuth().username !== data.user.username ? null : (

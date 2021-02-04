@@ -59,8 +59,13 @@ export const signin = (req, res) => {
       expiresIn: "1d",
     });
 
-    res.cookie("token", token, { expiresIn: "1d" });
+    res.cookie("token", token, {
+      expiresIn: "1d",
+      path: "/",
+      domain: "localhost",
+    });
     const { _id, username, email } = user;
+
     return res.json({
       token,
       user: { _id, username, email },
@@ -69,7 +74,10 @@ export const signin = (req, res) => {
 };
 
 export const signout = (req, res) => {
-  res.clearCookie("token");
+  res.clearCookie("token", {
+    path: "/",
+    domain: "localhost",
+  });
   res.json({
     message: "Signout sucess",
   });

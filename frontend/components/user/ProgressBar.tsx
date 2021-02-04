@@ -5,8 +5,10 @@ import { Typography } from "@material-ui/core";
 const ProgressBar: React.FC = () => {
   return (
     <div>
-      <Typography variant="body2">Progress Bar</Typography>
-      <LinearProgress variant="determinate" value={40} />
+      <Typography color="primary" variant="body2">
+        Progress Bar
+      </Typography>
+      <LinearProgress color="primary" variant="determinate" value={40} />
     </div>
   );
 };

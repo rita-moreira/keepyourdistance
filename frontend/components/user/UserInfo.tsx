@@ -8,7 +8,8 @@ import DescriptionIcon from "@material-ui/icons/Description";
 
 import Avatar from "@material-ui/core/Avatar";
 
-const UserInfo = ({ username, country, description }: any) => {
+const UserInfo = ({ username, country, description, photo }: any) => {
+  console.log(photo);
   return (
     <div>
       <Container
@@ -36,7 +37,7 @@ const UserInfo = ({ username, country, description }: any) => {
                 marginLeft: "50%",
                 transform: "translate(-50%)",
               }}
-              src="/default-profile.png"
+              src={photo}
             />
           </Grid>
           <Grid item xs={12}>
