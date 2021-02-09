@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 
 // components
 import Countries from "./Countries";
+import ImageSelector from "./ImageSelector";
 
 // material ui
 import {
@@ -16,7 +17,7 @@ import Alert from "@material-ui/lab/Alert";
 // typescript interface types
 import { StateUpdateFormValues } from "../../interface/types";
 // router -- next
-import Router from "next/router";
+import Router, { useRouter } from "next/router";
 // actions
 import { getUser, update } from "../../actions/user";
 import { isAuth, authenticate } from "../../actions/cookies";
@@ -30,15 +31,19 @@ import { AuthContext } from "../../contexts/AuthContext";
 
 const UpdateForm: React.FC<any> = ({ handleCloseEdit }: any) => {
   const classes = useStyles();
-
-  const { auth, setAuth } = useContext(AuthContext);
-  const data = getUser(`${API}/api/user/${auth?.username}`).data;
+  const router = useRouter();
+  const { setAuth } = useContext(AuthContext);
+  const data = getUser(`${API}/api/user/${router.query.username}`).data;
 
   // const { data } = useSWR(url, async (url) => {
   //   const response = await fetch(url);
   //   const data = await response.json();
   //   return data;
   // });
+
+  if (!data || !data.user) {
+    return <div>Loading...</div>;
+  }
 
   const initialValues = {
     username: `${data.user.username}`,
@@ -56,6 +61,9 @@ const UpdateForm: React.FC<any> = ({ handleCloseEdit }: any) => {
 
   const handleCountryValue = (country: string) => {
     setFormData({ ...formData, country });
+  };
+  const handleProfileValue = (photo: string) => {
+    setFormData({ ...formData, photo });
   };
   const closeModalEdit = () => {
     handleCloseEdit(false);
@@ -84,12 +92,10 @@ const UpdateForm: React.FC<any> = ({ handleCloseEdit }: any) => {
     };
 
     update(user).then((data: any) => {
-      console.log(data);
       if (data.error) {
         setFormData({ ...formData, error: data.error });
       } else {
         authenticate(data, () => {
-          console.log(data);
           setAuth({
             username: username,
             email: email,
@@ -98,14 +104,6 @@ const UpdateForm: React.FC<any> = ({ handleCloseEdit }: any) => {
           Router.push(`/profile/${username}`);
           closeModalEdit();
         });
-        // setFormData({
-        //   username: username,
-        //   email: email,
-        //   description: description,
-        //   country: country,
-        //   error: "",
-        //   message: data.message,
-        // });
       }
     });
   };
@@ -146,10 +144,18 @@ const UpdateForm: React.FC<any> = ({ handleCloseEdit }: any) => {
       >
         UPDATE PROFILE
       </Typography>
-      <form autoComplete="off" noValidate onSubmit={handleSubmit}>
+      <form
+        autoComplete="off"
+        noValidate
+        onSubmit={handleSubmit}
+        encType="multipart/form-data"
+      >
         <Grid container spacing={3} justify="center" alignItems="center">
           <Grid xs={12} item>
-            <input name="photo" type="file" onChange={handleChange("photo")} />
+            <ImageSelector
+              handleProfileValue={handleProfileValue}
+              defaultValue={data.user.photo}
+            />
           </Grid>
           <Grid xs={12} item>
             <TextField
@@ -204,7 +210,10 @@ const UpdateForm: React.FC<any> = ({ handleCloseEdit }: any) => {
             />
           </Grid>
           <Grid xs={12} item>
-            <Countries handleCountryValue={handleCountryValue} />
+            <Countries
+              handleCountryValue={handleCountryValue}
+              defaultValue={data.user.country}
+            />
           </Grid>
           <Grid xs={4} item style={{ textAlign: "center" }}></Grid>
           <Grid xs={4} item style={{ textAlign: "right" }}>

@@ -15,6 +15,7 @@ interface StateUpdate {
   email: string;
   description: string;
   country: string;
+  photo: string;
 }
 
 export const update = (user: StateUpdate): any => {
@@ -31,3 +32,12 @@ export const update = (user: StateUpdate): any => {
     })
     .catch((err) => console.log(err));
 };
+
+export function getUsers(url: string) {
+  const { data, error, mutate } = useSWR(url, async (url) => {
+    const response = await fetch(url);
+    const data = await response.json();
+    return data;
+  });
+  return { data, error, mutate };
+}

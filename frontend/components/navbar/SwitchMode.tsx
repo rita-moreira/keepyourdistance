@@ -26,12 +26,14 @@ const SwitchMode = () => {
   };
 
   return (
-    <Switch
-      color="primary"
-      checked={checked}
-      onChange={onchangeTheme}
-      name="checkedA"
-    />
+    <React.Fragment>
+      <Switch
+        color="primary"
+        checked={checked}
+        onChange={onchangeTheme}
+        name="checkedA"
+      />
+    </React.Fragment>
   );
 };
 

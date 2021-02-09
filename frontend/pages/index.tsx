@@ -1,28 +1,31 @@
-import Head from "next/head";
 import React from "react";
 
 // components
 import NavBar from "../components/navbar/NavBar";
 import MainContent from "../components/MainContent";
+import ListTasksCreated from "../components/tasks/ListTasksCreated";
 
 // custom style
 import { useStyles } from "../theme/theme";
 
-export default function Home() {
+import { isAuth } from "../actions/cookies";
+
+const Home: React.FC = () => {
   const classes = useStyles();
 
   return (
-    <div>
-      <Head>
-        <title>Keep your distance</title>
-      </Head>
-
-      <main className={classes.backgroundColor}>
-        <div style={{ width: "100%", height: "100vh" }}>
-          <NavBar />
+    <div className={classes.backgroundColor}>
+      <NavBar />
+      {!isAuth() ? (
+        <div>
           <MainContent />
         </div>
-      </main>
+      ) : (
+        <div>
+          <ListTasksCreated />
+        </div>
+      )}
     </div>
   );
-}
+};
+export default Home;

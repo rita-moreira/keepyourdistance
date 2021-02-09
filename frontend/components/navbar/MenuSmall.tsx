@@ -38,14 +38,8 @@ const MenuSmall: React.FC = () => {
     setAnchorEl(null);
   };
   return (
-    <div>
-      <IconButton
-        aria-label="more"
-        aria-controls="long-menu"
-        aria-haspopup="true"
-        color="primary"
-        onClick={handleClick}
-      >
+    <>
+      <IconButton aria-label="menu" color="primary" onClick={handleClick}>
         <MenuIcon />
       </IconButton>
 
@@ -58,7 +52,7 @@ const MenuSmall: React.FC = () => {
       >
         <MenuItem onClick={handleClose} className={classes.MenuItem}>
           <Link
-            href={`/profile/${isAuth().username}`}
+            href={`/profile/${isAuth()?.username}`}
             style={{ color: "#1F2634" }}
           >
             PROFILE
@@ -71,7 +65,7 @@ const MenuSmall: React.FC = () => {
           NOTIFICATION
         </MenuItem>
       </Menu>
-    </div>
+    </>
   );
 };
 

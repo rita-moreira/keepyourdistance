@@ -39,9 +39,11 @@ export const isAuth = () => {
 
 // signout
 export const signout = (next: any): any => {
-  removeCookie("token");
-  removeCookie("user");
-  next();
+  if (process.browser) {
+    removeCookie("token");
+    removeCookie("user");
+    next();
+  }
 
   return fetch(`${API}/api/signout`, {
     method: "GET",

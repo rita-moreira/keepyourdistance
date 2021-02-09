@@ -73,6 +73,7 @@ export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     backgroundColor: {
       backgroundColor: theme.palette.background.default,
+      // border: "1px solid white",
     },
 
     primaryButton: {

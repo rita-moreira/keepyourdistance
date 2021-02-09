@@ -1,4 +1,5 @@
 import React from "react";
+import { API } from "../config";
 
 // material ui
 import { Container, Typography, Grid, Button } from "@material-ui/core";
@@ -6,23 +7,40 @@ import { Container, Typography, Grid, Button } from "@material-ui/core";
 // custom theme
 import { useStyles } from "../theme/theme";
 
-const measures: { text1: string; text2: string }[] = [
-  {
-    text1: ".maximum of 10 people per room",
-    text2: "Everyone can join, currently we have _____ registered users!",
-  },
-  {
-    text1: ".ban on circulating between municipalities",
-    text2: "Allowed to visit the profiles of the users from __ countries!",
-  },
-  {
-    text1: ".compulsory curfew from 13h ",
-    text2: "Working 24 hours a day!",
-  },
-];
+// actions
+import { getUsers } from "../actions/user";
+
+// components
+import Loading from "../components/individual/Loading";
 
 const MainContent: React.FC = () => {
   const classes = useStyles();
+  const { data } = getUsers(`${API}/api/users`);
+
+  if (!data) {
+    return <Loading />;
+  }
+
+  // De quantos países diferentes são os users?
+  const countries = data
+    .map((item) => item.country)
+    .filter((x, i, a) => a.indexOf(x) === i);
+
+  const measures: { text1: string; text2: string }[] = [
+    {
+      text1: ".maximum of 10 people per room",
+      text2: `Everyone can join, currently we have ${data.length} registered users!`,
+    },
+    {
+      text1: ".ban on circulating between municipalities",
+      text2: `Allowed to visit the profiles of the users from ${countries.length} countries!`,
+    },
+    {
+      text1: ".compulsory curfew from 13h ",
+      text2: "Working 24 hours a day!",
+    },
+  ];
+
   const renderMeasures = measures.map((measure) => {
     return (
       <React.Fragment key={measure.text1}>

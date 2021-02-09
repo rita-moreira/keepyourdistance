@@ -1,25 +1,25 @@
 import React from "react";
 
 // material ui
-import { Container, Grid, Typography } from "@material-ui/core";
+import { Grid, Typography, Paper } from "@material-ui/core";
 // icons
 import LocationOnIcon from "@material-ui/icons/LocationOn";
 import DescriptionIcon from "@material-ui/icons/Description";
 
 import Avatar from "@material-ui/core/Avatar";
 
+// theme
+import { useStyles } from "../../theme/theme";
+
 const UserInfo = ({ username, country, description, photo }: any) => {
-  console.log(photo);
+  const classes = useStyles();
   return (
     <div>
-      <Container
-        maxWidth="xs"
-        style={{
-          border: "2px solid",
-          padding: "50px",
-          borderRadius: "20px",
-          height: "calc(100vh - 200px)",
-        }}
+      <Paper
+        square={false}
+        elevation={10}
+        className={classes.backgroundColor}
+        style={{ margin: "30px", minHeight: "300px" }}
       >
         <Grid
           container
@@ -47,27 +47,19 @@ const UserInfo = ({ username, country, description, photo }: any) => {
           </Grid>
 
           <Grid item xs={12}>
-            <Typography
-              color="primary"
-              variant="subtitle2"
-              style={{ textAlign: "left" }}
-            >
+            <Typography color="primary" variant="body2">
               <LocationOnIcon />
               {country}
             </Typography>
           </Grid>
           <Grid item xs={12}>
-            <Typography
-              color="primary"
-              variant="body2"
-              style={{ textAlign: "left" }}
-            >
+            <Typography color="primary" variant="body2">
               <DescriptionIcon />
               {description}
             </Typography>
           </Grid>
         </Grid>
-      </Container>
+      </Paper>
     </div>
   );
 };

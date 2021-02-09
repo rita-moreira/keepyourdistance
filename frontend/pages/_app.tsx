@@ -29,15 +29,13 @@ function App({ Component, pageProps }: AppProps) {
     password: string;
   }>(authCookie);
   return (
-    <div>
-      <ThemeContext.Provider value={{ themeMode, setThemeMode }}>
-        <AuthContext.Provider value={{ auth, setAuth }}>
-          <ThemeProvider theme={themeMode === "light" ? theme : darkTheme}>
-            <Component {...pageProps} />
-          </ThemeProvider>
-        </AuthContext.Provider>
-      </ThemeContext.Provider>
-    </div>
+    <ThemeContext.Provider value={{ themeMode, setThemeMode }}>
+      <AuthContext.Provider value={{ auth, setAuth }}>
+        <ThemeProvider theme={themeMode === "light" ? theme : darkTheme}>
+          <Component {...pageProps} />
+        </ThemeProvider>
+      </AuthContext.Provider>
+    </ThemeContext.Provider>
   );
 }
 

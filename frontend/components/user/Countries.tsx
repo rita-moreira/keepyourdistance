@@ -2,13 +2,22 @@ import React, { useState, useMemo } from "react";
 import countryList from "react-select-country-list";
 import Select from "react-select";
 
-const Countries: React.FC<any> = ({ handleCountryValue }: any) => {
-  const [value, setValue] = useState("");
+type OptionType = {
+  value: string;
+  label: string;
+};
+const Countries: React.FC<any> = ({
+  handleCountryValue,
+  defaultValue,
+}: any) => {
+  const [value, setValue] = useState(defaultValue);
   const options = useMemo(() => countryList().getData(), []);
-  const changeHandler = (value: any) => {
-    setValue(value);
+  console.log(value);
+  const changeHandler = (value: OptionType) => {
+    setValue(value.label);
     handleCountryValue(value.label);
   };
+
   return (
     <div>
       <Select
