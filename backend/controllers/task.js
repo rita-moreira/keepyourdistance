@@ -2,22 +2,28 @@ import Task from "../models/task.js";
 
 export const create = (req, res) => {
   const { title, description, currentTime, token } = req.body;
-
-  let newTask = new Task({
-    title,
-    description,
-    date: currentTime,
-  });
-  newTask.postedBy = req.user._id;
-
-  newTask.save((err, result) => {
-    if (err) {
+  Task.findOne({ title }).exec((err, user) => {
+    if (user) {
       return res.status(400).json({
-        error: err,
+        error: "Please change the title, already used!",
       });
     }
-    res.json({
-      message: "Task created with success.",
+    let newTask = new Task({
+      title,
+      description,
+      date: currentTime,
+    });
+    newTask.postedBy = req.user._id;
+
+    newTask.save((err, result) => {
+      if (err) {
+        return res.status(400).json({
+          error: err,
+        });
+      }
+      res.json({
+        message: "Task created with success.",
+      });
     });
   });
 };
@@ -25,9 +31,8 @@ export const create = (req, res) => {
 // tasks list
 
 export const list = (req, res) => {
-  console.log(req.body);
   Task.find({})
-    .populate("postedBy", "_id name username profile")
+    .populate("postedBy", "_id  username photo country")
     .select("_id title description postedBy date")
     .exec((err, data) => {
       if (err) {

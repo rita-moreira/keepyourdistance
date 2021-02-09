@@ -5,14 +5,13 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import fs from "fs";
-import path from "path";
 dotenv.config();
 
 //routes
 import taskRoutes from "./routes/task.js";
 import authRoutes from "./routes/auth.js";
 import userRoutes from "./routes/user.js";
+import userTaskRoutes from "./routes/userTask.js";
 
 // app
 const app = express();
@@ -34,19 +33,18 @@ mongoose
 // middleware
 app.use(morgan("dev"));
 app.use(bodyParser.json());
-app.use(express.urlencoded({ extended: false }));
-app.use("/public", express.static(path.join("public")));
 app.use(cookieParser());
 
 // cors
 if (process.env.NODE_ENV === "development") {
   app.use(cors({ origin: `${process.env.CLIENT_URL}` }));
 }
-//app.use(express.static(__dirname + "/public"));
+
 //routes middleware
 app.use("/api", taskRoutes);
 app.use("/api", authRoutes);
 app.use("/api", userRoutes);
+app.use("/api", userTaskRoutes);
 
 //port
 const PORT = process.env.PORT || 8000;

@@ -36,7 +36,6 @@ const userSchema = new mongoose.Schema(
       default: 0,
     },
     photo: {
-      filename: String,
       type: String,
     },
     resetPasswordLink: {
