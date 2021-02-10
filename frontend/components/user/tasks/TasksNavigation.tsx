@@ -10,6 +10,7 @@ const TasksNavigation: React.FC = () => {
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
   };
+  console.log(value);
   return (
     <React.Fragment>
       <Paper

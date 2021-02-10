@@ -40,3 +40,19 @@ export const accept = (req, res) => {
     });
   });
 };
+
+export const remove = (req, res) => {
+  const _id = req.params._id;
+  UserTask.findOneAndRemove(_id).exec((err, data) => {
+    if (err) {
+      consle.log(err);
+
+      return res.json({
+        error: err,
+      });
+    }
+    res.json({
+      message: "UserTask Accepted deleted successfully",
+    });
+  });
+};

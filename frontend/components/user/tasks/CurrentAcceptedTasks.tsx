@@ -9,32 +9,46 @@ import {
   Button,
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 // theme
 import { useStyles } from "../../../theme/theme";
+
+// actions
+import { removeTask } from "../../../actions/userTasks";
+import { getCookie } from "../../../actions/cookies";
 
 interface TaskProps {
   title: string;
   description: string;
   postedBy: string;
+  _id: string;
 }
 const CurrentAcceptedTasks: React.FC<TaskProps> = ({
   title,
   description,
   postedBy,
+  _id,
 }: {
   title: string;
   description: string;
   postedBy: string;
+  _id: string;
 }) => {
   const classes = useStyles();
 
+  const handleUserTaskRemove = (_id) => {
+    console.log(_id);
+    const token = getCookie("token");
+    removeTask(_id, token).then((data: any) => {
+      if (data.error) {
+        console.log(data.error);
+      } else {
+        console.log(data.message);
+      }
+    });
+  };
+
   return (
     <div>
-      <Typography color="primary" variant="body2">
-        Accepted Tasks
-      </Typography>
-
       <Accordion className={classes.backgroundColor}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
@@ -42,15 +56,12 @@ const CurrentAcceptedTasks: React.FC<TaskProps> = ({
           aria-controls="additional-actions1-content"
           id="additional-actions1-header"
         >
-          <Button color="primary">
-            <CheckCircleOutlineIcon />
-          </Button>
-
           <Typography
             color="primary"
             style={{
               fontFamily: "GothamPro-Bold",
               marginTop: "10px",
+              textAlign: "left",
             }}
           >
             {title.toUpperCase()}
@@ -66,12 +77,16 @@ const CurrentAcceptedTasks: React.FC<TaskProps> = ({
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography color="primary" style={{ width: "100%" }}>
+          <Typography
+            color="primary"
+            style={{ width: "100%", textAlign: "left" }}
+          >
             {description}
           </Typography>
           <Button
             className={classes.primaryButton}
             style={{ textAlign: "right" }}
+            onClick={() => handleUserTaskRemove(_id)}
           >
             Remove
           </Button>

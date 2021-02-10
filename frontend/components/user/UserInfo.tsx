@@ -17,7 +17,7 @@ const UserInfo = ({ username, country, description, photo }: any) => {
     <div>
       <Paper
         square={false}
-        elevation={10}
+        elevation={5}
         className={classes.backgroundColor}
         style={{ margin: "30px", minHeight: "300px" }}
       >

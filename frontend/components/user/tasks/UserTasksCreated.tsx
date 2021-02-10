@@ -77,8 +77,12 @@ const UserTasksCreated: React.FC = () => {
     );
   } else {
     return (
-      <div>
-        <Alert severity="info">
+      <div style={{ padding: "10px" }}>
+        <Alert
+          variant="filled"
+          severity="info"
+          style={{ color: "white", backgroundColor: "#D58643" }}
+        >
           There are currently no tasks created. Start creating!!!!!
         </Alert>
       </div>

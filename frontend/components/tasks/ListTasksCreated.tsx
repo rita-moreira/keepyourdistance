@@ -116,6 +116,7 @@ const CardHeader = ({
 }) => {
   const styles = useCardHeaderStyles();
   const iconBtnStyles = useSizedIconButtonStyles({ padding: 8, childSize: 20 });
+
   return (
     <Row>
       <Item position={"middle"}>
@@ -213,7 +214,7 @@ const ListTasksCreated: React.FC = () => {
   } else {
     return (
       <div>
-        <Alert severity="info">
+        <Alert color="primary" severity="info">
           There are currently no tasks created by other users. Please check
           Later!!!!!
         </Alert>

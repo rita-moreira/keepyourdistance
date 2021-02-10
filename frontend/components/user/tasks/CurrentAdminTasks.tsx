@@ -24,34 +24,48 @@ const CurrentAdminTasks: React.FC = () => {
       <Typography color="primary" variant="body2">
         Current Tasks
       </Typography>
-
-      <Accordion className={classes.backgroundColor}>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-label="Expand"
-          aria-controls="additional-actions1-content"
-          id="additional-actions1-header"
-        >
-          <Button color="primary">
-            <CheckCircleOutlineIcon />
-          </Button>
-
-          <Typography
-            color="primary"
-            style={{
-              fontFamily: "GothamPro-Bold",
-              marginTop: "10px",
-            }}
+      <div
+        style={{
+          display: "inline-block",
+          width: "10%",
+          verticalAlign: "middle",
+        }}
+      >
+        <Button color="primary">
+          <CheckCircleOutlineIcon />
+        </Button>
+      </div>
+      <div
+        style={{
+          display: "inline-block",
+          width: "90%",
+          verticalAlign: "middle",
+        }}
+      >
+        <Accordion className={classes.backgroundColor}>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-label="Expand"
+            aria-controls="additional-actions1-content"
+            id="additional-actions1-header"
           >
-            {AdminTasks[currentTask].title.toUpperCase()}
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Typography color="primary" style={{ width: "100%" }}>
-            {AdminTasks[currentTask].task}
-          </Typography>
-        </AccordionDetails>
-      </Accordion>
+            <Typography
+              color="primary"
+              style={{
+                fontFamily: "GothamPro-Bold",
+                marginTop: "10px",
+              }}
+            >
+              {AdminTasks[currentTask].title.toUpperCase()}
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography color="primary" style={{ width: "100%" }}>
+              {AdminTasks[currentTask].task}
+            </Typography>
+          </AccordionDetails>
+        </Accordion>
+      </div>
     </div>
   );
 };

@@ -20,6 +20,8 @@ import CurrentAcceptedTasks from "../../components/user/tasks/CurrentAcceptedTas
 // material ui
 import { Button, Grid, Typography } from "@material-ui/core";
 import Modal from "@material-ui/core/Modal";
+import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
+import Alert from "@material-ui/lab/Alert";
 
 // api url
 import { API } from "../../config";
@@ -50,8 +52,38 @@ const Profile = () => {
       </div>
     );
   }
-
   mutate();
+  const renderAcceptedTask = data.userTasks.map((task: any) => {
+    return (
+      <div key={task.title} style={{ marginTop: "10px", textAlign: "center" }}>
+        <div
+          style={{
+            display: "inline-block",
+            width: "10%",
+            verticalAlign: "middle",
+          }}
+        >
+          <Button color="primary">
+            <CheckCircleOutlineIcon />
+          </Button>
+        </div>
+        <div
+          style={{
+            display: "inline-block",
+            width: "90%",
+            verticalAlign: "middle",
+          }}
+        >
+          <CurrentAcceptedTasks
+            _id={task._id}
+            title={task.title}
+            description={task.description}
+            postedBy={task.postedBy.username}
+          />
+        </div>
+      </div>
+    );
+  });
 
   const handleClose = (close: boolean) => {
     setOpenModelTask(close);
@@ -124,7 +156,7 @@ const Profile = () => {
             </React.Fragment>
           )}
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={6} style={{ padding: "30px" }}>
           <Grid item xs={12}>
             <ProgressBar />
           </Grid>
@@ -132,11 +164,22 @@ const Profile = () => {
             <CurrentAdminTasks />
           </Grid>
           <Grid item xs={12} style={{ marginTop: "20px" }}>
-            <CurrentAcceptedTasks
-              title={data.userTasks[0].title}
-              description={data.userTasks[0].description}
-              postedBy={data.userTasks[0].postedBy.username}
-            />
+            <Typography color="primary" variant="body2">
+              Accepted Tasks
+            </Typography>
+            {renderAcceptedTask.length > 0 ? (
+              renderAcceptedTask
+            ) : (
+              <div>
+                <Alert
+                  severity="info"
+                  style={{ color: "white", backgroundColor: "#D58643" }}
+                >
+                  There are no tasks in course, you can accept tasks from other
+                  users!
+                </Alert>
+              </div>
+            )}
           </Grid>
         </Grid>
         <Grid item xs={12} style={{ marginTop: "20px" }}>

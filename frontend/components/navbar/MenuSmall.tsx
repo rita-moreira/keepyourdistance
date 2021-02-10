@@ -61,9 +61,9 @@ const MenuSmall: React.FC = () => {
         <MenuItem onClick={handleClose} className={classes.MenuItem}>
           ABOUT
         </MenuItem>
-        <MenuItem onClick={handleClose} className={classes.MenuItem}>
+        {/* <MenuItem onClick={handleClose} className={classes.MenuItem}>
           NOTIFICATION
-        </MenuItem>
+        </MenuItem> */}
       </Menu>
     </>
   );
