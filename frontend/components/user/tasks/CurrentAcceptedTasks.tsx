@@ -35,10 +35,9 @@ const CurrentAcceptedTasks: React.FC<TaskProps> = ({
 }) => {
   const classes = useStyles();
 
-  const handleUserTaskRemove = (_id) => {
-    console.log(_id);
+  const handleUserTaskRemove = (title: string) => {
     const token = getCookie("token");
-    removeTask(_id, token).then((data: any) => {
+    removeTask(title, token).then((data: any) => {
       if (data.error) {
         console.log(data.error);
       } else {
@@ -86,7 +85,7 @@ const CurrentAcceptedTasks: React.FC<TaskProps> = ({
           <Button
             className={classes.primaryButton}
             style={{ textAlign: "right" }}
-            onClick={() => handleUserTaskRemove(_id)}
+            onClick={() => handleUserTaskRemove(title)}
           >
             Remove
           </Button>

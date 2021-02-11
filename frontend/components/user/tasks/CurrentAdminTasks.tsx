@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 // material ui
 import {
@@ -10,17 +10,46 @@ import {
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
+import Modal from "@material-ui/core/Modal";
 // theme
 import { useStyles } from "../../../theme/theme";
 
 // tasks
 import { AdminTasks } from "../../../stores/adminTaks";
-const CurrentAdminTasks: React.FC = () => {
+
+// components
+import CompleteTaskModal from "./CompleteTaskModal";
+import Loading from "../../individual/Loading";
+const CurrentAdminTasks: React.FC<any> = ({ user, progressValue }: any) => {
   const classes = useStyles();
-  const [currentTask, setCurrentTask] = useState(0);
+  const [currentTask, setCurrentTask] = useState(progressValue);
+  const [openModalComplete, setOpenModelComplete] = useState(false);
+
+  const handleClose = () => {
+    setOpenModelComplete(false);
+  };
+  // Complete Admin Task
+  const handleCompleteAdminTask = () => {
+    setOpenModelComplete(true);
+  };
+
+  if (!AdminTasks) {
+    return <Loading />;
+  }
 
   return (
     <div>
+      <Modal open={openModalComplete} disableEnforceFocus disableAutoFocus>
+        <React.Fragment>
+          <CompleteTaskModal
+            defaultTitle={AdminTasks[currentTask].title}
+            defaultDescription={AdminTasks[currentTask].task}
+            handleClose={handleClose}
+            user={user}
+            progressValue={progressValue}
+          />
+        </React.Fragment>
+      </Modal>
       <Typography color="primary" variant="body2">
         Current Tasks
       </Typography>
@@ -31,7 +60,7 @@ const CurrentAdminTasks: React.FC = () => {
           verticalAlign: "middle",
         }}
       >
-        <Button color="primary">
+        <Button color="primary" onClick={handleCompleteAdminTask}>
           <CheckCircleOutlineIcon />
         </Button>
       </div>

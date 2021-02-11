@@ -1,5 +1,5 @@
 import express from "express";
-import { create, list } from "../controllers/task.js";
+import { create, list, remove } from "../controllers/task.js";
 import { taskCreationValidator } from "../validators/task.js";
 import { runValidation } from "../validators/index.js";
 import { requireSignin } from "../controllers/auth.js";
@@ -16,5 +16,7 @@ router.post(
 );
 // acess to all tasks
 router.get("/tasks", list);
+// delete
+router.delete("/task/:title", requireSignin, runValidation, remove);
 
 export default router;

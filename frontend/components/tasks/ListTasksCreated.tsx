@@ -214,7 +214,7 @@ const ListTasksCreated: React.FC = () => {
   } else {
     return (
       <div>
-        <Alert color="primary" severity="info">
+        <Alert severity="info">
           There are currently no tasks created by other users. Please check
           Later!!!!!
         </Alert>

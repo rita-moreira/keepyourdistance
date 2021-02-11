@@ -27,6 +27,7 @@ function App({ Component, pageProps }: AppProps) {
     username: string;
     email: string;
     password: string;
+    progress: number;
   }>(authCookie);
   return (
     <ThemeContext.Provider value={{ themeMode, setThemeMode }}>

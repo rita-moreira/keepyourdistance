@@ -12,7 +12,6 @@ const Countries: React.FC<any> = ({
 }: any) => {
   const [value, setValue] = useState(defaultValue);
   const options = useMemo(() => countryList().getData(), []);
-  console.log(value);
   const changeHandler = (value: OptionType) => {
     setValue(value.label);
     handleCountryValue(value.label);

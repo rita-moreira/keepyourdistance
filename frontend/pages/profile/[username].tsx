@@ -17,6 +17,7 @@ import CurrentAdminTasks from "../../components/user/tasks/CurrentAdminTasks";
 import TasksNavigation from "../../components/user/tasks/TasksNavigation";
 import UserTasksCreated from "../../components/user/tasks/UserTasksCreated";
 import CurrentAcceptedTasks from "../../components/user/tasks/CurrentAcceptedTasks";
+import CompletedAdminTasks from "../../components/user/tasks/CompletedAdminTasks";
 // material ui
 import { Button, Grid, Typography } from "@material-ui/core";
 import Modal from "@material-ui/core/Modal";
@@ -44,6 +45,7 @@ const Profile = () => {
   const { data, mutate } = getUser(`${API}/api/user/${router.query.username}`);
   const [openModalTask, setOpenModelTask] = useState(false);
   const [openModalEdit, setOpenModelEdit] = useState(false);
+  const [showTasks, setShowTasks] = useState(0);
 
   if (!data || !data.user || !data.userTasks) {
     return (
@@ -52,6 +54,7 @@ const Profile = () => {
       </div>
     );
   }
+
   mutate();
   const renderAcceptedTask = data.userTasks.map((task: any) => {
     return (
@@ -90,6 +93,9 @@ const Profile = () => {
   };
   const handleCloseEdit = (close: boolean) => {
     setOpenModelEdit(close);
+  };
+  const handleShowTasks = (show: number) => {
+    setShowTasks(show);
   };
 
   return (
@@ -158,10 +164,13 @@ const Profile = () => {
         </Grid>
         <Grid item xs={6} style={{ padding: "30px" }}>
           <Grid item xs={12}>
-            <ProgressBar />
+            <ProgressBar progressValue={data.user.progress} />
           </Grid>
           <Grid item xs={12} style={{ marginTop: "20px" }}>
-            <CurrentAdminTasks />
+            <CurrentAdminTasks
+              user={data.user}
+              progressValue={data.user.progress}
+            />
           </Grid>
           <Grid item xs={12} style={{ marginTop: "20px" }}>
             <Typography color="primary" variant="body2">
@@ -183,11 +192,26 @@ const Profile = () => {
           </Grid>
         </Grid>
         <Grid item xs={12} style={{ marginTop: "20px" }}>
-          <TasksNavigation />
+          <TasksNavigation handleShowTasks={handleShowTasks} />
         </Grid>
-        <Grid item xs={12} style={{ marginTop: "20px" }}>
-          <UserTasksCreated />
-        </Grid>
+        {showTasks === 2 ? (
+          <Grid item xs={12} style={{ marginTop: "20px" }}>
+            <UserTasksCreated />
+          </Grid>
+        ) : showTasks === 1 ? (
+          <Grid item xs={12} style={{ marginTop: "20px" }}>
+            <CompletedAdminTasks admintasks={data.adminCompletedTasks} />
+          </Grid>
+        ) : (
+          <>
+            <Grid item xs={12} style={{ marginTop: "20px" }}>
+              <UserTasksCreated />
+            </Grid>
+            <Grid item xs={12} style={{ marginTop: "20px" }}>
+              <CompletedAdminTasks admintasks={data.adminCompletedTasks} />
+            </Grid>
+          </>
+        )}
       </Grid>
     </div>
   );

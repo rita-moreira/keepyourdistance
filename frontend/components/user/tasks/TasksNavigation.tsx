@@ -3,14 +3,15 @@ import React, { useState } from "react";
 
 // theme
 import { useStyles } from "../../../theme/theme";
-const TasksNavigation: React.FC = () => {
+const TasksNavigation: React.FC<any> = ({ handleShowTasks }: any) => {
   const classes = useStyles();
   const [value, setValue] = useState(0);
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
+    handleShowTasks(newValue);
   };
-  console.log(value);
+
   return (
     <React.Fragment>
       <Paper

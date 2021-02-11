@@ -1,8 +1,7 @@
-import useSWR from "swr";
 import { API } from "../config";
-
-export const createTask = (task: any, token: any): any => {
-  return fetch(`${API}/api/task`, {
+import useSWR from "swr";
+export const completeTask = (task: any, token: any): any => {
+  return fetch(`${API}/api/adminTask`, {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -25,18 +24,3 @@ export function useFetch<Data = any, Error = any>(url: string) {
   });
   return { data, error, mutate };
 }
-
-export const removeTask = (title: string, token: string): any => {
-  return fetch(`${API}/api/task/${title}`, {
-    method: "DELETE",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  })
-    .then((response) => {
-      return response.json();
-    })
-    .catch((err) => console.log(err));
-};

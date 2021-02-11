@@ -1,6 +1,7 @@
 import User from "../models/user.js";
 import Task from "../models/task.js";
 import UserTask from "../models/userTask.js";
+import AdminTask from "../models/adminTask.js";
 import jwt from "jsonwebtoken";
 
 export const profile = (req, res) => {
@@ -37,11 +38,23 @@ export const profile = (req, res) => {
                 error: "An error occurr",
               });
             }
-            res.json({
-              user,
-              tasks: data,
-              userTasks: data2,
-            });
+            AdminTask.find({ completedBy: userId })
+              .populate("completedBy", "_id username photo")
+
+              .limit(10)
+              .exec((err, data3) => {
+                if (err) {
+                  return res.status(400).json({
+                    error: "An error occurr",
+                  });
+                }
+                res.json({
+                  user,
+                  tasks: data,
+                  userTasks: data2,
+                  adminCompletedTasks: data3,
+                });
+              });
           });
       });
   });
@@ -70,11 +83,19 @@ export const update = (req, res) => {
 
     res.cookie("token", token, { expiresIn: "1d" });
 
-    const { _id, username, email, country, description, photo } = user;
+    const {
+      _id,
+      username,
+      email,
+      country,
+      description,
+      photo,
+      progress,
+    } = user;
 
     return res.json({
       token,
-      user: { _id, username, email, country, description, photo },
+      user: { _id, username, email, country, description, photo, progress },
     });
   });
 };

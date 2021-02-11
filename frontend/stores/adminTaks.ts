@@ -3,7 +3,7 @@ export const AdminTasks = [
     id: 1,
     title: "Welcome to Keep your Distance!",
     task:
-      " Your first task could only be to make the classic homemade bread! Go to the internet to see a recipe and start getting your hands dirty!",
+      "Your first task could only be to make the classic homemade bread! Go to the internet to see a recipe and start getting your hands dirty!",
   },
   {
     id: 2,

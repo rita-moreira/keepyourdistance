@@ -27,6 +27,7 @@ const userSchema = new mongoose.Schema(
     salt: String,
     description: {
       type: String,
+      default: "description",
     },
     country: {
       type: String,
@@ -37,10 +38,15 @@ const userSchema = new mongoose.Schema(
     },
     photo: {
       type: String,
+      default: "",
     },
     resetPasswordLink: {
       data: String,
       default: "",
+    },
+    progress: {
+      type: Number,
+      default: 0,
     },
   },
   { timestamp: true }

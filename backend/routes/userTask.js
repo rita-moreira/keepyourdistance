@@ -7,6 +7,6 @@ const router = express.Router();
 
 // to create a task we need an authenticated user
 router.post("/userTask", requireSignin, runValidation, accept);
-router.delete("/userTask/:id", requireSignin, runValidation, remove);
+router.delete("/userTask/:title", requireSignin, runValidation, remove);
 
 export default router;

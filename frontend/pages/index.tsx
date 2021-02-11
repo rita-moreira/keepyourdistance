@@ -4,7 +4,7 @@ import React from "react";
 import NavBar from "../components/navbar/NavBar";
 import MainContent from "../components/MainContent";
 import ListTasksCreated from "../components/tasks/ListTasksCreated";
-
+import ListCompletedTasks from "../components/tasks/ListCompletedTasks";
 // custom style
 import { useStyles } from "../theme/theme";
 
@@ -23,6 +23,7 @@ const Home: React.FC = () => {
       ) : (
         <div>
           <ListTasksCreated />
+          <ListCompletedTasks />
         </div>
       )}
     </div>

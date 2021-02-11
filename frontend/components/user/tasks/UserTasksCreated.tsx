@@ -11,8 +11,10 @@ import TextInfoContent from "@mui-treasury/components/content/textInfo";
 import { useLightTopShadowStyles } from "@mui-treasury/styles/shadow/lightTop";
 
 // actions
-import { useFetch } from "../../../actions/task";
+import { removeTask, useFetch } from "../../../actions/task";
 import { API } from "../../../config";
+import { Button, Typography } from "@material-ui/core";
+import { getCookie } from "../../../actions/cookies";
 
 interface Task {
   _id: string;
@@ -29,6 +31,20 @@ const UserTasksCreated: React.FC = () => {
   if (error) return <div>failed to load</div>;
   if (!data) return <div>loading...</div>;
   mutate();
+
+  const handleUserTaskRemove = (title: string) => {
+    console.log(title);
+    const token = getCookie("token");
+    removeTask(title, token).then((data: any) => {
+      if (data.error) {
+        console.log(data.error);
+      } else {
+        console.log(data.message);
+        mutate();
+      }
+    });
+  };
+
   const renderTasks = data
     ?.filter((user: Task) => {
       return user.postedBy.username === router.query.username;
@@ -59,6 +75,12 @@ const UserTasksCreated: React.FC = () => {
                 body={task.description}
               />
             </CardContent>
+            <Button
+              onClick={() => handleUserTaskRemove(task.title)}
+              color="primary"
+            >
+              Delete
+            </Button>
           </Card>
         </React.Fragment>
       );

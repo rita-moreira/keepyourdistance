@@ -12,6 +12,7 @@ import taskRoutes from "./routes/task.js";
 import authRoutes from "./routes/auth.js";
 import userRoutes from "./routes/user.js";
 import userTaskRoutes from "./routes/userTask.js";
+import adminTaskRoutes from "./routes/adminTask.js";
 
 // app
 const app = express();
@@ -45,6 +46,7 @@ app.use("/api", taskRoutes);
 app.use("/api", authRoutes);
 app.use("/api", userRoutes);
 app.use("/api", userTaskRoutes);
+app.use("/api", adminTaskRoutes);
 
 //port
 const PORT = process.env.PORT || 8000;

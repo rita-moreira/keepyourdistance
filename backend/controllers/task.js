@@ -43,3 +43,18 @@ export const list = (req, res) => {
       res.json(data);
     });
 };
+
+export const remove = (req, res) => {
+  const title = req.params.title;
+
+  Task.findOneAndRemove({ title }).exec((err, data) => {
+    if (err) {
+      return res.json({
+        error: err,
+      });
+    }
+    res.json({
+      message: "Task created deleted successfully",
+    });
+  });
+};

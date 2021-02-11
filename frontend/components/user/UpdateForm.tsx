@@ -77,6 +77,7 @@ const UpdateForm: React.FC<any> = ({ handleCloseEdit }: any) => {
     error,
     message,
   } = formData;
+  console.log(isAuth());
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

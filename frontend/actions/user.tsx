@@ -16,6 +16,7 @@ interface StateUpdate {
   description: string;
   country: string;
   photo: string;
+  progress?: number;
 }
 
 export const update = (user: StateUpdate): any => {

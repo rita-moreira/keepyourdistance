@@ -42,12 +42,13 @@ export const accept = (req, res) => {
 };
 
 export const remove = (req, res) => {
-  const _id = req.params._id;
-  UserTask.findOneAndRemove(_id).exec((err, data) => {
+  const title = req.params.title;
+  console.log(title);
+  UserTask.findOneAndRemove({ title }).exec((err, data) => {
     if (err) {
-      consle.log(err);
+      console.log(err);
 
-      return res.json({
+      return res.status(400).json({
         error: err,
       });
     }

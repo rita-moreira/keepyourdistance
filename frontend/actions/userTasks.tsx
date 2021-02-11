@@ -16,8 +16,8 @@ export const acceptTask = (task: any, token: any): any => {
     .catch((err) => console.log(err));
 };
 
-export const removeTask = (_id: string, token: string): any => {
-  return fetch(`${API}/api/userTask/${_id}`, {
+export const removeTask = (title: string, token: string): any => {
+  return fetch(`${API}/api/userTask/${title}`, {
     method: "DELETE",
     headers: {
       Accept: "application/json",
