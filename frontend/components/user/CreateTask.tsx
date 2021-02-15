@@ -30,7 +30,6 @@ const CreateTaskModal: React.FC<any> = ({ handleClose }: any) => {
   const { title, description, error, message } = formData;
 
   const token = getCookie("token");
-  console.log(token);
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const currentTime = currentDate();

@@ -1,17 +1,18 @@
 import React from "react";
 
 // material ui
-import { Typography } from "@material-ui/core";
+import { Card, CardContent, Typography } from "@material-ui/core";
 
-const Section: React.FC<any> = ({
-  title,
-  text,
-  video,
-}: {
+interface SectionProps {
   title: string;
   text: string;
   video: string;
-}) => {
+}
+const Section: React.FC<SectionProps> = ({
+  title,
+  text,
+  video,
+}: SectionProps) => {
   return (
     <div style={{ padding: "50px" }}>
       <Typography variant="h3" color="secondary">
@@ -25,15 +26,18 @@ const Section: React.FC<any> = ({
         {text}
       </Typography>
       <div style={{ marginLeft: "25%", marginTop: "100px" }}>
-        <iframe
-          width="1000px"
-          height="500px"
-          src={video}
-          frameBorder="0"
-          allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-          type="video/mp4"
-        />
+        <Card>
+          <CardContent>
+            <iframe
+              width="100%"
+              height="500px"
+              src={video}
+              frameBorder="0"
+              allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

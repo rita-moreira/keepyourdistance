@@ -20,6 +20,7 @@ import { update } from "../../../actions/userTasks";
 const CompleteUserTaskModal: React.FC<any> = ({
   handleCloseCompleteUserTask,
   task,
+  mutate,
 }: any) => {
   const classes = useStyles();
   const initialValues = {
@@ -81,6 +82,7 @@ const CompleteUserTaskModal: React.FC<any> = ({
         setFormData({ ...formData, error: data.message });
         handleCloseCompleteUserTask(false);
       }
+      mutate();
     });
   };
   return (

@@ -59,7 +59,7 @@ export function useFetch<Data = any, Error = any>(url: string) {
 
 // add comment
 
-export const addComment = (comment: any, token: any): any => {
+export const addComment = (comment: any, token: string): any => {
   return fetch(`${API}/api/userComments`, {
     method: "PUT",
     headers: {

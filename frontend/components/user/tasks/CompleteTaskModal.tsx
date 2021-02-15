@@ -18,21 +18,24 @@ import { update } from "../../../actions/user";
 import { completeTask } from "../../../actions/adminTask";
 import { getCookie } from "../../../actions/cookies";
 import { Alert } from "@material-ui/lab";
-const CompleteTaskModal: React.FC<any> = ({
+
+interface CompleteTaskModalProps {
+  defaultTitle: string;
+  defaultDescription: string;
+  handleClose: (value: boolean) => void;
+  user: any;
+  progressValue: number;
+  mutate: () => void;
+}
+
+const CompleteTaskModal: React.FC<CompleteTaskModalProps> = ({
   defaultTitle,
   defaultDescription,
   handleClose,
   user,
   progressValue,
   mutate,
-}: {
-  defaultTitle: string;
-  defaultDescription: string;
-  handleClose: any;
-  user: any;
-  progressValue: number;
-  mutate: any;
-}) => {
+}: CompleteTaskModalProps) => {
   const classes = useStyles();
   const initialValues = {
     title: defaultTitle,
@@ -111,9 +114,10 @@ const CompleteTaskModal: React.FC<any> = ({
             console.log(data.message);
           }
         });
-        mutate();
+
         handleClose(false);
       }
+      mutate();
     });
   };
 

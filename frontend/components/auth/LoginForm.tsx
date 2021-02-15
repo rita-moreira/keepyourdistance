@@ -60,7 +60,7 @@ const LoginForm: React.FC = () => {
     setFormData({ ...formData, error: "" });
     const user = { email, password };
 
-    signin(user).then((data: any) => {
+    signin(user).then((data: { error: string; message: string }) => {
       if (data.error) {
         setFormData({ ...formData, error: data.error });
       } else {

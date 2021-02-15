@@ -31,6 +31,7 @@ const userSchema = new mongoose.Schema(
     },
     country: {
       type: String,
+      default: " ",
     },
     role: {
       type: Number,

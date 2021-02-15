@@ -7,7 +7,14 @@ import { Alert } from "@material-ui/lab";
 import AddUserComment from "./comment/AddUserComment";
 import Comments from "./comment/Comments";
 
-const CompletedUserTasks: React.FC<any> = ({ userTasks, mutate }: any) => {
+interface CompletedUserTasksProps {
+  userTasks: any;
+  mutate: () => void;
+}
+const CompletedUserTasks: React.FC<CompletedUserTasksProps> = ({
+  userTasks,
+  mutate,
+}: CompletedUserTasksProps) => {
   if (!userTasks) {
     return <Loading />;
   }

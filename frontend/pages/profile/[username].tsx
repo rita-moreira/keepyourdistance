@@ -152,6 +152,7 @@ const Profile = ({ params }: any) => {
             <CompleteUserTaskModal
               handleCloseCompleteUserTask={handleCloseCompleteUserTask}
               task={completeTask}
+              mutate={mutate}
             />
           </React.Fragment>
         </Modal>
