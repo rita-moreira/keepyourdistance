@@ -118,11 +118,11 @@ const LoginForm: React.FC = () => {
               onChange={handleChange}
             />
           </Grid>
-          <Grid xs={12} item style={{ textAlign: "right" }}>
+          {/* <Grid xs={12} item style={{ textAlign: "right" }}>
             <Link variant="subtitle2" style={{ color: "#646464" }}>
               Forgot password?
             </Link>
-          </Grid>
+          </Grid> */}
           <Grid xs={12} item style={{ textAlign: "center" }}>
             <Button className={classes.primaryButton} type="submit">
               LOGIN

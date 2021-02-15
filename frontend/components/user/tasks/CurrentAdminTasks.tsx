@@ -20,11 +20,17 @@ import { AdminTasks } from "../../../stores/adminTaks";
 // components
 import CompleteTaskModal from "./CompleteTaskModal";
 import Loading from "../../individual/Loading";
-const CurrentAdminTasks: React.FC<any> = ({ user, progressValue }: any) => {
+const CurrentAdminTasks: React.FC<any> = ({
+  user,
+  progressValue,
+  mutate,
+}: any) => {
   const classes = useStyles();
   const [currentTask, setCurrentTask] = useState(progressValue);
   const [openModalComplete, setOpenModelComplete] = useState(false);
-
+  useEffect(() => {
+    setCurrentTask(progressValue);
+  }, [progressValue]);
   const handleClose = () => {
     setOpenModelComplete(false);
   };
@@ -47,6 +53,7 @@ const CurrentAdminTasks: React.FC<any> = ({ user, progressValue }: any) => {
             handleClose={handleClose}
             user={user}
             progressValue={progressValue}
+            mutate={mutate}
           />
         </React.Fragment>
       </Modal>
@@ -60,9 +67,11 @@ const CurrentAdminTasks: React.FC<any> = ({ user, progressValue }: any) => {
           verticalAlign: "middle",
         }}
       >
-        <Button color="primary" onClick={handleCompleteAdminTask}>
-          <CheckCircleOutlineIcon />
-        </Button>
+        {progressValue <= 15 ? (
+          <Button color="primary" onClick={handleCompleteAdminTask}>
+            <CheckCircleOutlineIcon />
+          </Button>
+        ) : null}
       </div>
       <div
         style={{

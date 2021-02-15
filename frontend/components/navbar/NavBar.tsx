@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 // ------------ material ui
 import { Container, Grid } from "@material-ui/core";
@@ -14,7 +14,10 @@ import { AuthContext } from "../../contexts/AuthContext";
 
 const NavBar: React.FC = () => {
   const { auth } = useContext(AuthContext);
-
+  const [authenticate, setAuthenticate] = useState(null);
+  useEffect(() => {
+    setAuthenticate(auth);
+  }, [auth]);
   // // window size
   // const [windowSize, setWindowSize] = useState<number>(null);
 
@@ -35,10 +38,10 @@ const NavBar: React.FC = () => {
           <SwitchMode />
         </Grid>
         <Grid item xs={1}>
-          {auth ? <MenuSmall /> : null}
+          {authenticate ? <MenuSmall /> : null}
         </Grid>
         <Grid item xs={3}>
-          <LogButton />
+          <LogButton authenticate={authenticate} />
         </Grid>
       </Grid>
     </Container>

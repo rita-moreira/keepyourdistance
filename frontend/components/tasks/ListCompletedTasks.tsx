@@ -1,27 +1,67 @@
-import React from "react";
+import { Divider, Paper, Typography } from "@material-ui/core";
+import React, { useState } from "react";
 import { useFetch } from "../../actions/adminTask";
 import { API } from "../../config";
 
 // components
-import Loading from "../individual/Loading";
 import CompletedAdminTasks from "../user/tasks/CompletedAdminTasks";
-const ListCompletedTasks: React.FC = () => {
-  const { data, error } = useFetch(`${API}/api/adminTasks`);
+import PaginationPage from "./PaginationPage";
 
-  if (error) return <div>failed to load</div>;
-  if (!data)
-    return (
-      <div>
-        <Loading />
-      </div>
-    );
+// theme
+import { useStyles } from "../../theme/theme";
+const ListCompletedTasks: React.FC = () => {
+  const classes = useStyles();
+  const { data, error, mutate } = useFetch(`${API}/api/adminTasks`);
+  const [currentPage, setcurrentPage] = useState(1);
+  const [tasksPerPage] = useState(6);
+
+  if (error) {
+    return <div>failed to load</div>;
+  }
+  if (!data) {
+    return null;
+  }
+
   // mostrar so as que foram partilhadas
-  const showTasks = data.filter((item: any) => {
+  const showTasks = Object.values(data).filter((item: any) => {
     return item.share;
   });
+
+  // get current
+  const indexOfLastTask = currentPage * tasksPerPage;
+  const indexOfFirstTask = indexOfLastTask - tasksPerPage;
+  const currentTasks = showTasks.slice(indexOfFirstTask, indexOfLastTask);
   return (
     <div>
-      <CompletedAdminTasks admintasks={showTasks} />
+      <Paper
+        elevation={3}
+        style={{
+          padding: "10px",
+          margin: "20px",
+          minHeight: "calc(100vh - 300px )",
+          textAlign: "center",
+        }}
+        className={classes.backgroundColor}
+      >
+        <Typography color="primary" variant="h4" style={{ padding: "20px" }}>
+          COMPLETED TASKS
+        </Typography>
+        <Divider variant="middle" />
+        <div
+          style={{
+            minHeight: "calc(100vh - 400px)",
+            marginTop: "50px",
+          }}
+        >
+          <CompletedAdminTasks admintasks={currentTasks} mutate={mutate} />
+        </div>
+        <PaginationPage
+          tasksPerPage={tasksPerPage}
+          totalTasks={showTasks.length}
+          currentPage={currentPage}
+          setPage={setcurrentPage}
+        />
+      </Paper>
     </div>
   );
 };

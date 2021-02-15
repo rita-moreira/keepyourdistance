@@ -8,7 +8,12 @@ export default class MyDocument extends Document {
       <Html lang="en">
         <Head>
           {/* PWA primary color */}
+
           <meta name="theme-color" />
+          <meta
+            name="description"
+            content="Due to this pandemic, we spend a lot of time indoors so it often becomes boring because we don't know how to occupy the time. This website offers you lots of ways to spend your day, be productive and still interact with other users."
+          />
           <link
             rel="stylesheet"
             href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"

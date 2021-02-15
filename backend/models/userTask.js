@@ -31,6 +31,18 @@ const userTaskSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    comment: {
+      type: String,
+    },
+    share: {
+      type: Boolean,
+    },
+    comments: [
+      {
+        text: String,
+        addedBy: { type: ObjectId, ref: "User" },
+      },
+    ],
   },
   { timestamps: true }
 );

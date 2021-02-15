@@ -4,7 +4,8 @@
 	src: url('fonts/GothamPro-Bold.eot?') format('eot'), 
 	    url('fonts/GothamPro-Bold.otf')  format('opentype'),
 	     url('fonts/GothamPro-Bold.woff') format('woff'), 
-       url('fonts/GothamPro-Bold.woff2')  format('woff')
+	   url('fonts/GothamPro-Bold.woff2')  format('woff');
+	font-display: swap;
 }
 
 

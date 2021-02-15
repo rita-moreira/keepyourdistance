@@ -21,17 +21,20 @@ interface TaskProps {
   description: string;
   postedBy: string;
   _id: string;
+  mutate: any;
 }
 const CurrentAcceptedTasks: React.FC<TaskProps> = ({
   title,
   description,
   postedBy,
   _id,
+  mutate,
 }: {
   title: string;
   description: string;
   postedBy: string;
   _id: string;
+  mutate: any;
 }) => {
   const classes = useStyles();
 
@@ -43,6 +46,7 @@ const CurrentAcceptedTasks: React.FC<TaskProps> = ({
       } else {
         console.log(data.message);
       }
+      mutate();
     });
   };
 

@@ -32,7 +32,7 @@ export const signup = (req, res) => {
           });
         }
         res.json({
-          message: "Signup success!",
+          message: "Signup success! Please Login!",
         });
       });
     });
@@ -88,26 +88,3 @@ export const requireSignin = expressJwt({
   algorithms: ["HS256"],
   userProperty: "user",
 });
-
-// forgot password, reset password
-export const forgotPassword = (req, res) => {
-  // we need to know the user email
-  const { email } = req.body;
-  // check if user based in that email exists
-  User.findOne({ email }, (err, user) => {
-    if (err || !user) {
-      return res.status(401).json({
-        error: "User with that email does not exist",
-      });
-    }
-
-    const token = jwt.sign({ _id: user._id }, process.env.JWT_RESET_PASSWORD, {
-      expiresIn: "10m",
-    });
-
-    // send email
-
-    //populating the db with user, resetPasswordLink
-  });
-};
-export const resetPassword = (req, res) => {};

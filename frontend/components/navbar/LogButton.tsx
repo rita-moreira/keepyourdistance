@@ -1,7 +1,7 @@
-import React, { useContext } from "react";
+import React from "react";
 
 // ------------ context
-import { AuthContext } from "../../contexts/AuthContext";
+// import { AuthContext } from "../../contexts/AuthContext";
 
 // ------------ material ui
 import { Button } from "@material-ui/core";
@@ -14,8 +14,8 @@ import { signout } from "../../actions/cookies";
 
 import Router from "next/router";
 
-const LogButton: React.FC = () => {
-  const { auth } = useContext(AuthContext);
+const LogButton: React.FC<any> = ({ authenticate }: any) => {
+  // const { auth } = useContext(AuthContext);
 
   // custom style
   const classes = useStyles();
@@ -23,7 +23,7 @@ const LogButton: React.FC = () => {
   // onclick={() => signout(() => Router.replace("/"))}
   return (
     <React.Fragment>
-      {auth ? (
+      {authenticate ? (
         <Button
           className={classes.primaryButton}
           href="/"

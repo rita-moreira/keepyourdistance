@@ -24,12 +24,14 @@ const CompleteTaskModal: React.FC<any> = ({
   handleClose,
   user,
   progressValue,
+  mutate,
 }: {
   defaultTitle: string;
   defaultDescription: string;
   handleClose: any;
   user: any;
   progressValue: number;
+  mutate: any;
 }) => {
   const classes = useStyles();
   const initialValues = {
@@ -109,6 +111,8 @@ const CompleteTaskModal: React.FC<any> = ({
             console.log(data.message);
           }
         });
+        mutate();
+        handleClose(false);
       }
     });
   };
@@ -145,7 +149,7 @@ const CompleteTaskModal: React.FC<any> = ({
           <Grid xs={12} item>
             <TextFieldInput
               name="comment"
-              placeholder="Plese share your experience!"
+              placeholder="Please share your experience!"
               value={comment}
               type="text"
               onChange={handleChange}
@@ -184,7 +188,7 @@ const CompleteTaskModal: React.FC<any> = ({
               className={classes.primaryButton}
               type="submit"
             >
-              CREATE
+              COMPLETE
             </Button>
           </Grid>
         </Grid>

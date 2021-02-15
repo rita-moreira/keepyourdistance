@@ -28,6 +28,12 @@ const adminSchema = new mongoose.Schema(
       type: Boolean,
       required: true,
     },
+    comments: [
+      {
+        text: String,
+        postedBy: { type: ObjectId, ref: "User" },
+      },
+    ],
   },
   { timestamps: true }
 );

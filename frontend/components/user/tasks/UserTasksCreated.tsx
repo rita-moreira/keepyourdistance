@@ -13,7 +13,7 @@ import { useLightTopShadowStyles } from "@mui-treasury/styles/shadow/lightTop";
 // actions
 import { removeTask, useFetch } from "../../../actions/task";
 import { API } from "../../../config";
-import { Button, Typography } from "@material-ui/core";
+import { Button } from "@material-ui/core";
 import { getCookie } from "../../../actions/cookies";
 
 interface Task {
@@ -77,7 +77,7 @@ const UserTasksCreated: React.FC = () => {
             </CardContent>
             <Button
               onClick={() => handleUserTaskRemove(task.title)}
-              color="primary"
+              color="secondary"
             >
               Delete
             </Button>
@@ -103,7 +103,7 @@ const UserTasksCreated: React.FC = () => {
         <Alert
           variant="filled"
           severity="info"
-          style={{ color: "white", backgroundColor: "#D58643" }}
+          style={{ color: "white", backgroundColor: "#EF7D1D" }}
         >
           There are currently no tasks created. Start creating!!!!!
         </Alert>

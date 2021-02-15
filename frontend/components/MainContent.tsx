@@ -18,7 +18,11 @@ const MainContent: React.FC = () => {
   const { data } = getUsers(`${API}/api/users`);
 
   if (!data) {
-    return <Loading />;
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
   }
 
   // De quantos países diferentes são os users?

@@ -40,10 +40,6 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    resetPasswordLink: {
-      data: String,
-      default: "",
-    },
     progress: {
       type: Number,
       default: 0,

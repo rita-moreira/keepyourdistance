@@ -17,6 +17,7 @@ import { theme, darkTheme } from "../theme/theme";
 
 // actions
 import { getCookie } from "../actions/cookies";
+import Head from "next/head";
 
 function App({ Component, pageProps }: AppProps) {
   const themeCookie = getCookie("theme");
@@ -30,13 +31,18 @@ function App({ Component, pageProps }: AppProps) {
     progress: number;
   }>(authCookie);
   return (
-    <ThemeContext.Provider value={{ themeMode, setThemeMode }}>
-      <AuthContext.Provider value={{ auth, setAuth }}>
-        <ThemeProvider theme={themeMode === "light" ? theme : darkTheme}>
-          <Component {...pageProps} />
-        </ThemeProvider>
-      </AuthContext.Provider>
-    </ThemeContext.Provider>
+    <>
+      <Head>
+        <title>Keep your distance</title>
+      </Head>
+      <ThemeContext.Provider value={{ themeMode, setThemeMode }}>
+        <AuthContext.Provider value={{ auth, setAuth }}>
+          <ThemeProvider theme={themeMode === "light" ? theme : darkTheme}>
+            <Component {...pageProps} />
+          </ThemeProvider>
+        </AuthContext.Provider>
+      </ThemeContext.Provider>
+    </>
   );
 }
 

@@ -1,10 +1,12 @@
 import React from "react";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
-export default function CircularIndeterminate() {
+const CircularIndeterminate: React.FC = () => {
   return (
     <div>
       <CircularProgress color="primary" />
     </div>
   );
-}
+};
+
+export default CircularIndeterminate;

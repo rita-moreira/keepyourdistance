@@ -87,7 +87,7 @@ const CreateTaskModal: React.FC<any> = ({ handleClose }: any) => {
       }}
     >
       <Typography
-        color="primary"
+        color="secondary"
         variant="h4"
         style={{ textAlign: "center", marginBottom: "20px" }}
       >

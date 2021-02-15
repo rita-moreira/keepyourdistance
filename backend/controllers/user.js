@@ -6,7 +6,6 @@ import jwt from "jsonwebtoken";
 
 export const profile = (req, res) => {
   let username = req.params.username;
-
   // find user by his username
   User.findOne({ username }).exec((err, userFromDB) => {
     if (err || !userFromDB) {
@@ -21,27 +20,29 @@ export const profile = (req, res) => {
     // find tasks created by that user
     Task.find({ postedBy: userId })
       .populate("postebBy", "_id username")
-      .limit(10)
       .exec((err, data) => {
         if (err) {
           return res.status(400).json({
             error: "An error occurr",
           });
         }
+
         UserTask.find({ acceptedBy: userId })
-          .populate("acceptedBy", "_id username")
-          .populate("postedBy", "_id username")
-          .limit(10)
+          .populate("acceptedBy", "_id username photo")
+          .populate("postedBy", "_id username photo")
+          .populate("comments.addedBy", "_id username photo")
           .exec((err, data2) => {
             if (err) {
+              console.log(err);
               return res.status(400).json({
                 error: "An error occurr",
               });
             }
+
             AdminTask.find({ completedBy: userId })
               .populate("completedBy", "_id username photo")
-
-              .limit(10)
+              .populate("comments.postedBy", "_id  username photo ")
+              .sort({ createdAt: -1 })
               .exec((err, data3) => {
                 if (err) {
                   return res.status(400).json({

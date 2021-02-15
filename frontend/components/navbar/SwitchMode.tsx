@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 
 // material ui
-import { Switch } from "@material-ui/core";
+import { FormControlLabel, Switch } from "@material-ui/core";
 
 // theme context
 import { ThemeContext } from "../../contexts/ThemeContext";
@@ -27,11 +27,17 @@ const SwitchMode = () => {
 
   return (
     <React.Fragment>
-      <Switch
-        color="primary"
-        checked={checked}
-        onChange={onchangeTheme}
-        name="checkedA"
+      <FormControlLabel
+        control={
+          <Switch
+            color="primary"
+            checked={checked}
+            onChange={onchangeTheme}
+            name="checkedA"
+          />
+        }
+        labelPlacement="start"
+        label=" "
       />
     </React.Fragment>
   );

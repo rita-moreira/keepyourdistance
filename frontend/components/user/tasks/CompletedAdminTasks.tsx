@@ -1,24 +1,26 @@
 import React from "react";
-import {
-  Avatar,
-  Card,
-  CardContent,
-  CardHeader,
-  Typography,
-} from "@material-ui/core";
+import { Avatar, Card, CardContent, CardHeader, Link } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 
-const CompletedAdminTasks: React.FC<any> = ({ admintasks }: any) => {
-  console.log(admintasks);
+// components
+import AddComment from "./comment/AddComment";
+import Comments from "./comment/Comments";
+
+const CompletedAdminTasks: React.FC<any> = ({ admintasks, mutate }: any) => {
   const currentTime = Date.now();
   const completedAdminTasks = admintasks.map((task: any) => {
     const diff: number = currentTime - Date.parse(task.createdAt);
     let date: string;
-    if (diff > 60e3) {
+    if (diff > 86400e3) {
+      date = Math.floor(diff / 86400e3) + " days ago";
+    } else if (diff > 3600e3 && diff < 86400e3) {
+      date = Math.floor(diff / 3600e3) + " hours ago";
+    } else if (diff > 60e3 && diff < 3600e3) {
       date = Math.floor(diff / 60e3) + " minutes ago";
     } else {
       date = Math.floor(diff / 1e3) + " seconds ago";
     }
+
     return (
       <div
         key={task._id}
@@ -31,16 +33,29 @@ const CompletedAdminTasks: React.FC<any> = ({ admintasks }: any) => {
       >
         <Card>
           <CardHeader
-            avatar={<Avatar aria-label="recipe" src={task.completedBy.photo} />}
+            avatar={
+              <Avatar
+                style={{ width: "40px", height: "40px" }}
+                src={task.completedBy.photo}
+                alt="profile photo"
+              />
+            }
             title={"TASK: " + task.title}
             subheader={date}
           />
 
           <CardContent>
-            <Typography variant="body2" color="textSecondary" component="p">
+            <Link
+              href={`/user/${task.completedBy.username}`}
+              underline="always"
+              variant="body2"
+              color="textSecondary"
+            >
               {task.completedBy.username}: {task.comment}
-            </Typography>
+            </Link>
           </CardContent>
+          <AddComment id={task._id} mutate={mutate} />
+          <Comments comments={task.comments} mutate={mutate} />
         </Card>
       </div>
     );
@@ -53,9 +68,9 @@ const CompletedAdminTasks: React.FC<any> = ({ admintasks }: any) => {
         <Alert
           variant="filled"
           severity="info"
-          style={{ color: "white", backgroundColor: "#D58643" }}
+          style={{ color: "white", backgroundColor: "#EF7D1D" }}
         >
-          There are currently no tasks completed.
+          There are currently no mandatory tasks completed.
         </Alert>
       )}
     </div>

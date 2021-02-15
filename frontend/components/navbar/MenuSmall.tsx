@@ -38,8 +38,8 @@ const MenuSmall: React.FC = () => {
     setAnchorEl(null);
   };
   return (
-    <>
-      <IconButton aria-label="menu" color="primary" onClick={handleClick}>
+    <div>
+      <IconButton color="primary" onClick={handleClick}>
         <MenuIcon />
       </IconButton>
 
@@ -59,13 +59,12 @@ const MenuSmall: React.FC = () => {
           </Link>
         </MenuItem>
         <MenuItem onClick={handleClose} className={classes.MenuItem}>
-          ABOUT
+          <Link href={"/about"} style={{ color: "#1F2634" }}>
+            ABOUT
+          </Link>
         </MenuItem>
-        {/* <MenuItem onClick={handleClose} className={classes.MenuItem}>
-          NOTIFICATION
-        </MenuItem> */}
       </Menu>
-    </>
+    </div>
   );
 };
 

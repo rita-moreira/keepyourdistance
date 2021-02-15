@@ -8,7 +8,7 @@ const useStyles = makeStyles((theme) => ({
     flexWrap: "wrap",
     justifyContent: "space-around",
     overflow: "hidden",
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: "white",
   },
   gridList: {
     width: 500,
@@ -33,6 +33,7 @@ const ImageSelector = ({ handleProfileValue, defaultValue }: any) => {
         style={{ width: "10%", height: "10%" }}
       />
       <Slider
+        color="secondary"
         value={value}
         min={0}
         step={1}

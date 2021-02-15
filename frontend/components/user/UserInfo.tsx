@@ -30,7 +30,6 @@ const UserInfo = ({ username, country, description, photo }: any) => {
         >
           <Grid item xs={12}>
             <Avatar
-              alt="Profile image"
               style={{
                 width: "100px",
                 height: "100px",
@@ -38,6 +37,7 @@ const UserInfo = ({ username, country, description, photo }: any) => {
                 transform: "translate(-50%)",
               }}
               src={photo}
+              alt="Profile image"
             />
           </Grid>
           <Grid item xs={12}>

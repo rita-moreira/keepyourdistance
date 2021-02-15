@@ -33,7 +33,7 @@ const UpdateForm: React.FC<any> = ({ handleCloseEdit }: any) => {
   const classes = useStyles();
   const router = useRouter();
   const { setAuth } = useContext(AuthContext);
-  const data = getUser(`${API}/api/user/${router.query.username}`).data;
+  const { data, mutate } = getUser(`${API}/api/user/${router.query.username}`);
 
   // const { data } = useSWR(url, async (url) => {
   //   const response = await fetch(url);
@@ -77,7 +77,6 @@ const UpdateForm: React.FC<any> = ({ handleCloseEdit }: any) => {
     error,
     message,
   } = formData;
-  console.log(isAuth());
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -106,6 +105,7 @@ const UpdateForm: React.FC<any> = ({ handleCloseEdit }: any) => {
           closeModalEdit();
         });
       }
+      mutate();
     });
   };
   const showError = () =>
@@ -139,7 +139,7 @@ const UpdateForm: React.FC<any> = ({ handleCloseEdit }: any) => {
       }}
     >
       <Typography
-        color="primary"
+        color="secondary"
         variant="h4"
         style={{ textAlign: "center", marginBottom: "20px" }}
       >

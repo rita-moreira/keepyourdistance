@@ -1,5 +1,5 @@
 import express from "express";
-import { complete, list } from "../controllers/adminTask.js";
+import { complete, list, comment } from "../controllers/adminTask.js";
 import { requireSignin } from "../controllers/auth.js";
 import { runValidation } from "../validators/index.js";
 import { AdminCompleteTaskValidator } from "../validators/adminTask.js";
@@ -13,6 +13,7 @@ router.post(
   runValidation,
   complete
 );
+router.put("/comments", requireSignin, runValidation, comment);
 // acess to all tasks
 router.get("/adminTasks", list);
 export default router;
