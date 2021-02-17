@@ -1,32 +1,32 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from 'react';
 
-// ------------ material ui
-import { Container, Grid } from "@material-ui/core";
+import { Container, Grid } from '@material-ui/core';
 
-// ------------ components
-import Logo from "../individual/Logo";
-import LogButton from "./LogButton";
-import SwitchMode from "./SwitchMode";
-import MenuSmall from "./MenuSmall";
+import Logo from '../individual/Logo';
+import LogButton from './LogButton';
+import SwitchMode from './SwitchMode';
+import MenuSmall from './MenuSmall';
 
-// context auth
-import { AuthContext } from "../../contexts/AuthContext";
+import { AuthContext } from '../../contexts/AuthContext';
+
+interface StateAuthenticate {
+  _id: string;
+  username: string;
+  email: string;
+}
+
+const initialValues = {
+  _id: "",
+  username: "",
+  email: "",
+}
 
 const NavBar: React.FC = () => {
   const { auth } = useContext(AuthContext);
-  const [authenticate, setAuthenticate] = useState(null);
+  const [authenticate, setAuthenticate] = useState<StateAuthenticate>(initialValues);
   useEffect(() => {
     setAuthenticate(auth);
   }, [auth]);
-  // // window size
-  // const [windowSize, setWindowSize] = useState<number>(null);
-
-  // useEffect(() => {
-  //   function handleResize() {
-  //     setWindowSize(window.innerWidth);
-  //   }
-  //   window.addEventListener("resize", handleResize);
-  // }, [windowSize]);
 
   return (
     <Container maxWidth="lg">
@@ -41,7 +41,7 @@ const NavBar: React.FC = () => {
           {authenticate ? <MenuSmall /> : null}
         </Grid>
         <Grid item xs={3}>
-          <LogButton authenticate={authenticate} />
+          <LogButton />
         </Grid>
       </Grid>
     </Container>

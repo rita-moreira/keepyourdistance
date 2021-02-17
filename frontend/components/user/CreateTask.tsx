@@ -1,94 +1,125 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from 'react';
 
-// material ui
 import {
   Button,
   Container,
+  createStyles,
   Grid,
+  makeStyles,
   TextField,
+  Theme,
   Typography,
-} from "@material-ui/core";
-import Alert from "@material-ui/lab/Alert";
+} from '@material-ui/core';
+import Alert from '@material-ui/lab/Alert';
 
-import { getCookie } from "../../actions/cookies";
-import { createTask } from "../../actions/task";
-import { currentDate } from "../../actions/date";
+import { getCookie } from '../../actions/cookies';
+import { createTask } from '../../actions/task';
+import { currentDate } from '../../actions/date';
+import { useStyles } from '../../theme/theme';
 
-// custom theme
-import { useStyles } from "../../theme/theme";
+const useStylesPage = makeStyles((theme: Theme) => createStyles({
+  container: {
+    marginTop: '10%',
+    border: '2px solid',
+    padding: '50px',
+    borderRadius: '20px',
+    backgroundColor: 'white',
+  },
+  createTask: {
+    textAlign: 'center', marginBottom: '20px'
+  },
+  alignCenter: {
+    textAlign: "center"
+  },
+  alignLeft: {
+    textAlign: "left"
+  },
+  alignRight: {
+    textAlign: "right"
+  },
+  button: {
+    width: "70%"
+  }
+
+}));
+
 
 const initialValues = {
-  title: "",
-  description: "",
-  error: "",
-  message: "",
+  title: '',
+  description: '',
+  error: '',
+  message: '',
 };
 const CreateTaskModal: React.FC<any> = ({ handleClose }: any) => {
   const classes = useStyles();
+  const classes2 = useStylesPage();
   const [formData, setFormData] = useState(initialValues);
 
-  const { title, description, error, message } = formData;
+  const {
+    title, description, error, message,
+  } = formData;
 
-  const token = getCookie("token");
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const token = getCookie('token');
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const currentTime = currentDate();
-    setFormData({ ...formData, error: "" });
+
+    setFormData({ ...formData, error: '' });
 
     const task = { title, description, currentTime };
+    const response = await createTask(task, token)
+    if (response.error) {
+      setFormData({ ...formData, error: response.error });
 
-    createTask(task, token).then((data: any) => {
-      if (data.error) {
-        setFormData({ ...formData, error: data.error });
-      } else {
-        setFormData({
-          ...formData,
-          title: "",
-          description: "",
-          error: "",
-          message: data.message,
-        });
-      }
-    });
-    // Router.push("/profile");
+    } else {
+
+      setFormData({
+        ...formData,
+        title: '',
+        description: '',
+        error: '',
+        message: response.message,
+      });
+    }
   };
 
-  const showError = () =>
-    error ? (
-      <Alert variant="filled" severity="error">
-        {error}
-      </Alert>
-    ) : null;
-  const showMessage = () =>
-    message && !error ? (
-      <Alert variant="filled" severity="success">
-        {message}
-      </Alert>
-    ) : null;
+  const handleShowMessage = useCallback(() => {
+    if (error) {
+      return (
+        <Alert variant="filled" severity="error" >
+          {error}
+        </Alert >)
+    }
+    else if (message && !error) {
+      return (
+        <Alert variant="filled" severity="success" >
+          {message}
+        </Alert >)
+    }
+    else {
+      return null;
+    }
+
+  }, [error, message])
+
 
   const closeModal = () => {
     handleClose(false);
   };
   const handleChange = (name: string) => (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    setFormData({ ...formData, error: "", [name]: e.target.value });
+    setFormData({ ...formData, error: '', [name]: e.target.value });
   };
   return (
     <Container
       maxWidth="sm"
-      style={{
-        marginTop: "10%",
-        border: "2px solid",
-        padding: "50px",
-        borderRadius: "20px",
-        backgroundColor: "white",
-      }}
+      className={classes2.container}
     >
       <Typography
         color="secondary"
         variant="h4"
-        style={{ textAlign: "center", marginBottom: "20px" }}
+        className={classes2.createTask}
       >
         CREATE TASK
       </Typography>
@@ -97,7 +128,7 @@ const CreateTaskModal: React.FC<any> = ({ handleClose }: any) => {
           <Grid xs={12} item>
             <TextField
               InputLabelProps={{
-                style: { color: "#1F2634" },
+                style: { color: '#1F2634' },
               }}
               variant="outlined"
               color="primary"
@@ -108,13 +139,13 @@ const CreateTaskModal: React.FC<any> = ({ handleClose }: any) => {
               placeholder="title"
               type="text"
               fullWidth
-              onChange={handleChange("title")}
+              onChange={handleChange('title')}
             />
           </Grid>
           <Grid xs={12} item>
             <TextField
               InputLabelProps={{
-                style: { color: "#1F2634" },
+                style: { color: '#1F2634' },
               }}
               name="description"
               label="Description"
@@ -125,25 +156,23 @@ const CreateTaskModal: React.FC<any> = ({ handleClose }: any) => {
               variant="outlined"
               color="primary"
               fullWidth
-              onChange={handleChange("description")}
+              onChange={handleChange('description')}
             />
           </Grid>
 
-          <Grid xs={4} item style={{ textAlign: "center" }}></Grid>
-          <Grid xs={4} item style={{ textAlign: "right" }}>
+          <Grid xs={4} item className={classes2.alignCenter} />
+          <Grid xs={4} item className={classes2.alignRight} >
             <Button
-              style={{ width: "70%" }}
               onClick={closeModal}
-              className={classes.primaryButton}
+              className={`${classes.primaryButton} ${classes2.button}`}
             >
               CANCEL
             </Button>
           </Grid>
-          <Grid xs={4} item style={{ textAlign: "left" }}>
+          <Grid xs={4} item className={classes2.alignLeft} >
             <Button
-              style={{ width: "70%" }}
-              className={classes.primaryButton}
-              onClick={handleClose}
+              className={`${classes.primaryButton} ${classes2.button}`}
+              onClick={handleShowMessage}
               type="submit"
             >
               CREATE
@@ -151,10 +180,9 @@ const CreateTaskModal: React.FC<any> = ({ handleClose }: any) => {
           </Grid>
         </Grid>
       </form>
+      {handleShowMessage()}
 
-      {showMessage()}
-      {showError()}
-    </Container>
+    </Container >
   );
 };
 

@@ -1,31 +1,60 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, memo } from 'react';
 
-// material ui
 import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
   Typography,
   Button,
-} from "@material-ui/core";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
-import Modal from "@material-ui/core/Modal";
-// theme
-import { useStyles } from "../../../theme/theme";
+  createStyles,
+  makeStyles,
+  Theme,
+} from '@material-ui/core';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
+import Modal from '@material-ui/core/Modal';
+import { useStyles } from '../../../theme/theme';
+import { AdminTasks } from '../../../fixtures/adminTaks';
+import CompleteTaskModal from './CompleteTaskModal';
+import Loading from '../../individual/Loading';
+import { CompleteTaskUser } from "../../../interface/index"
 
-// tasks
-import { AdminTasks } from "../../../stores/adminTaks";
 
-// components
-import CompleteTaskModal from "./CompleteTaskModal";
-import Loading from "../../individual/Loading";
-const CurrentAdminTasks: React.FC<any> = ({
+
+const useStylesPage = makeStyles((theme: Theme) => createStyles({
+  progress: {
+    display: 'inline-block',
+    width: '10%',
+    verticalAlign: 'middle',
+  },
+  accordionRoot: {
+    display: 'inline-block',
+    width: '90%',
+    verticalAlign: 'middle',
+  },
+  title: {
+    fontFamily: 'GothamPro-Bold',
+    marginTop: '10px',
+  },
+  task: {
+    width: '100%'
+  },
+
+}));
+
+interface CurrentAdminTasksState {
+  progressValue: number;
+  mutate: () => void;
+  user: CompleteTaskUser;
+}
+const CurrentAdminTasks: React.FC<CurrentAdminTasksState> = ({
   user,
   progressValue,
   mutate,
-}: any) => {
+}: CurrentAdminTasksState) => {
+
   const classes = useStyles();
+  const classes2 = useStylesPage();
   const [currentTask, setCurrentTask] = useState(progressValue);
   const [openModalComplete, setOpenModelComplete] = useState(false);
   useEffect(() => {
@@ -44,9 +73,9 @@ const CurrentAdminTasks: React.FC<any> = ({
   }
 
   return (
-    <div>
+    <>
       <Modal open={openModalComplete} disableEnforceFocus disableAutoFocus>
-        <React.Fragment>
+        <>
           <CompleteTaskModal
             defaultTitle={AdminTasks[currentTask].title}
             defaultDescription={AdminTasks[currentTask].task}
@@ -55,17 +84,13 @@ const CurrentAdminTasks: React.FC<any> = ({
             progressValue={progressValue}
             mutate={mutate}
           />
-        </React.Fragment>
+        </>
       </Modal>
       <Typography color="primary" variant="body2">
         Current Tasks
       </Typography>
       <div
-        style={{
-          display: "inline-block",
-          width: "10%",
-          verticalAlign: "middle",
-        }}
+        className={classes2.progress}
       >
         {progressValue <= 15 ? (
           <Button color="primary" onClick={handleCompleteAdminTask}>
@@ -74,11 +99,7 @@ const CurrentAdminTasks: React.FC<any> = ({
         ) : null}
       </div>
       <div
-        style={{
-          display: "inline-block",
-          width: "90%",
-          verticalAlign: "middle",
-        }}
+        className={classes2.accordionRoot}
       >
         <Accordion className={classes.backgroundColor}>
           <AccordionSummary
@@ -89,23 +110,20 @@ const CurrentAdminTasks: React.FC<any> = ({
           >
             <Typography
               color="primary"
-              style={{
-                fontFamily: "GothamPro-Bold",
-                marginTop: "10px",
-              }}
+              className={classes2.title}
             >
               {AdminTasks[currentTask].title.toUpperCase()}
             </Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <Typography color="primary" style={{ width: "100%" }}>
+            <Typography color="primary" className={classes2.task}>
               {AdminTasks[currentTask].task}
             </Typography>
           </AccordionDetails>
         </Accordion>
       </div>
-    </div>
+    </>
   );
 };
 
-export default CurrentAdminTasks;
+export default memo(CurrentAdminTasks);

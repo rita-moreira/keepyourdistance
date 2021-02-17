@@ -1,6 +1,4 @@
-import React from "react";
-
-// material ui
+import React from 'react';
 import {
   createStyles,
   IconButton,
@@ -9,23 +7,20 @@ import {
   MenuItem,
   Theme,
   Link,
-} from "@material-ui/core";
-// menu icon
-import MenuIcon from "@material-ui/icons/Menu";
+} from '@material-ui/core';
+import MenuIcon from '@material-ui/icons/Menu';
+import { isAuth } from '../../actions/cookies';
 
-// actions
-import { isAuth } from "../../actions/cookies";
-
-// custom style menu dropdown
-export const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    MenuItem: {
-      backgroundColor: "white",
-      color: "#1F2634",
-      fontFamily: "GothamPro-Bold",
-    },
-  })
-);
+const useStyles = makeStyles((theme: Theme) => createStyles({
+  MenuItem: {
+    backgroundColor: 'white',
+    color: '#1F2634',
+    fontFamily: 'GothamPro-Bold',
+  },
+  color: {
+    color: '#1F2634'
+  }
+}));
 
 const MenuSmall: React.FC = () => {
   const classes = useStyles();
@@ -38,7 +33,7 @@ const MenuSmall: React.FC = () => {
     setAnchorEl(null);
   };
   return (
-    <div>
+    <>
       <IconButton color="primary" onClick={handleClick}>
         <MenuIcon />
       </IconButton>
@@ -53,18 +48,18 @@ const MenuSmall: React.FC = () => {
         <MenuItem onClick={handleClose} className={classes.MenuItem}>
           <Link
             href={`/profile/${isAuth()?.username}`}
-            style={{ color: "#1F2634" }}
+            className={classes.color}
           >
             PROFILE
           </Link>
         </MenuItem>
         <MenuItem onClick={handleClose} className={classes.MenuItem}>
-          <Link href={"/about"} style={{ color: "#1F2634" }}>
+          <Link href="/about" className={classes.color}>
             ABOUT
           </Link>
         </MenuItem>
       </Menu>
-    </div>
+    </>
   );
 };
 

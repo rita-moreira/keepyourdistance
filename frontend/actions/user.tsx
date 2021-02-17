@@ -1,5 +1,7 @@
-import { API } from "../config";
-import useSWR from "swr";
+import useSWR from 'swr';
+import { API_BASE_URL } from '../config';
+import axios from "axios";
+import { headers } from "./global"
 
 export function getUser(url: string) {
   const { data, error, mutate } = useSWR(url, async (url) => {
@@ -19,20 +21,20 @@ interface StateUpdate {
   progress?: number;
 }
 
-export const update = (user: StateUpdate): any => {
-  return fetch(`${API}/api/user/update`, {
-    method: "PUT",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(user),
-  })
-    .then((response) => {
-      return response.json();
+export const update = async (user: StateUpdate) => {
+  try {
+    const response = await axios({
+      url: `${API_BASE_URL}/api/user/update`,
+      method: "PUT",
+      headers,
+      data: JSON.stringify(user),
     })
-    .catch((err) => console.log(err));
-};
+    return response.data
+  } catch (err) {
+    return err.response.data
+  }
+
+}
 
 export function getUsers(url: string) {
   const { data, error, mutate } = useSWR(url, async (url) => {

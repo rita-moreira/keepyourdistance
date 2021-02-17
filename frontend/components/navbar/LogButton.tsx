@@ -1,43 +1,51 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from 'react';
+import { Button } from '@material-ui/core';
+import { useRouter } from 'next/router';
+import { useStyles } from '../../theme/theme';
+import { signout } from '../../actions/cookies';
+import { AuthContext } from '../../contexts/AuthContext';
 
-// ------------ context
-// import { AuthContext } from "../../contexts/AuthContext";
+interface StateAuthenticate {
+  _id: string;
+  username: string;
+  email: string;
+  [key: string]: string;
+}
+const initialValues = {
+  _id: "",
+  username: "",
+  email: "",
+}
 
-// ------------ material ui
-import { Button } from "@material-ui/core";
-
-// custom style
-import { useStyles } from "../../theme/theme";
-
-// actions
-import { signout } from "../../actions/cookies";
-
-import Router from "next/router";
-
-const LogButton: React.FC<any> = ({ authenticate }: any) => {
-  // const { auth } = useContext(AuthContext);
-
-  // custom style
+const LogButton: React.FC = () => {
+  const { auth } = useContext(AuthContext);
+  const [authenticate, setAuthenticate] = useState<StateAuthenticate>(initialValues);
+  const router = useRouter();
   const classes = useStyles();
 
-  // onclick={() => signout(() => Router.replace("/"))}
+  useEffect(() => {
+    setAuthenticate(auth);
+  }, [auth]);
+
   return (
-    <React.Fragment>
+    <>
       {authenticate ? (
         <Button
           className={classes.primaryButton}
           href="/"
-          onClick={() => signout(() => Router.replace("/"))}
+          onClick={() => signout(() => router.replace('/'))}
         >
           LOGOUT
         </Button>
       ) : (
-        <Button className={classes.primaryButton} href="/login">
-          LOGIN
-        </Button>
-      )}
-    </React.Fragment>
+          <Button className={classes.primaryButton} href="/login">
+            LOGIN
+          </Button>
+        )}
+    </>
   );
 };
+
+
 
 export default LogButton;

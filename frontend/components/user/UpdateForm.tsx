@@ -1,39 +1,61 @@
-import React, { useContext, useState } from "react";
-
-// components
-import Countries from "./Countries";
-import ImageSelector from "./ImageSelector";
-
-// material ui
+import React, { useCallback, useContext, useState } from 'react';
 import {
   Button,
   Container,
+  createStyles,
   Grid,
+  makeStyles,
   TextField,
+  Theme,
   Typography,
-} from "@material-ui/core";
-import Alert from "@material-ui/lab/Alert";
+} from '@material-ui/core';
+import Alert from '@material-ui/lab/Alert';
+import { useRouter } from 'next/router';
+import Countries from './Countries';
+import ImageSelector from './ImageSelector';
+import { StateUpdateFormValues } from '../../interface/index';
+import { getUser, update } from '../../actions/user';
+import { isAuth, authenticate } from '../../actions/cookies';
+import { API_BASE_URL } from '../../config';
+import { useStyles } from '../../theme/theme';
+import { AuthContext } from '../../contexts/AuthContext';
 
-// typescript interface types
-import { StateUpdateFormValues } from "../../interface/types";
-// router -- next
-import Router, { useRouter } from "next/router";
-// actions
-import { getUser, update } from "../../actions/user";
-import { isAuth, authenticate } from "../../actions/cookies";
-import { API } from "../../config";
+const useStylesPage = makeStyles((theme: Theme) => createStyles({
+  container: {
+    marginTop: '10%',
+    border: '2px solid',
+    padding: '50px',
+    borderRadius: '20px',
+    backgroundColor: 'white',
+  },
+  updateProfile: {
+    textAlign: 'center', marginBottom: '20px'
+  },
+  alignCenter: {
+    textAlign: "center"
+  },
+  alignLeft: {
+    textAlign: "left"
+  },
+  alignRight: {
+    textAlign: "right"
+  },
+  button: {
+    width: "70%"
+  }
 
-// theme custom
-import { useStyles } from "../../theme/theme";
+}));
 
-// context
-import { AuthContext } from "../../contexts/AuthContext";
 
-const UpdateForm: React.FC<any> = ({ handleCloseEdit }: any) => {
+interface UpdateFormProps {
+  handleCloseEdit: (value: boolean) => void;
+}
+const UpdateForm: React.FC<UpdateFormProps> = ({ handleCloseEdit }: UpdateFormProps) => {
   const classes = useStyles();
+  const classes2 = useStylesPage();
   const router = useRouter();
   const { setAuth } = useContext(AuthContext);
-  const { data, mutate } = getUser(`${API}/api/user/${router.query.username}`);
+  const { data, mutate } = getUser(`${API_BASE_URL}/api/user/${router.query.username}`);
 
   // const { data } = useSWR(url, async (url) => {
   //   const response = await fetch(url);
@@ -42,7 +64,7 @@ const UpdateForm: React.FC<any> = ({ handleCloseEdit }: any) => {
   // });
 
   if (!data || !data.user) {
-    return <div>Loading...</div>;
+    return <>Loading...</>;
   }
 
   const initialValues = {
@@ -51,12 +73,12 @@ const UpdateForm: React.FC<any> = ({ handleCloseEdit }: any) => {
     description: `${data.user.description}`,
     country: `${data.user.country}`,
     photo: `${data.user.photo}`,
-    error: "",
-    message: "",
+    error: '',
+    message: '',
   };
 
   const [formData, setFormData] = useState<StateUpdateFormValues>(
-    initialValues
+    initialValues,
   );
 
   const handleCountryValue = (country: string) => {
@@ -78,9 +100,9 @@ const UpdateForm: React.FC<any> = ({ handleCloseEdit }: any) => {
     message,
   } = formData;
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setFormData({ ...formData, error: "" });
+    setFormData({ ...formData, error: '' });
 
     const user = {
       _id: isAuth()._id,
@@ -90,58 +112,57 @@ const UpdateForm: React.FC<any> = ({ handleCloseEdit }: any) => {
       country,
       photo,
     };
-
-    update(user).then((data: any) => {
-      if (data.error) {
-        setFormData({ ...formData, error: data.error });
-      } else {
-        authenticate(data, () => {
-          setAuth({
-            username: username,
-            email: email,
-            password: isAuth().password,
-          });
-          Router.push(`/profile/${username}`);
-          closeModalEdit();
+    const response = await update(user)
+    if (response.error) {
+      setFormData({ ...formData, error: response.error });
+    } else {
+      authenticate(response, () => {
+        setAuth({
+          _id: isAuth()._id,
+          username,
+          email,
+          // password: isAuth().password,
         });
-      }
-      mutate();
-    });
+        router.push(`/profile/${username}`);
+        closeModalEdit();
+      });
+    }
+    mutate();
   };
-  const showError = () =>
-    error ? (
-      <Alert variant="filled" severity="error">
-        {error}
-      </Alert>
-    ) : null;
-  const showMessage = () =>
-    message && !error ? (
-      <Alert variant="filled" severity="success">
-        {message}
-      </Alert>
-    ) : null;
+  const handleShowMessage = useCallback(() => {
+    if (error) {
+      return (
+        <Alert variant="filled" severity="error" >
+          {error}
+        </Alert >)
+    }
+    else if (message && !error) {
+      return (
+        <Alert variant="filled" severity="success" >
+          {message}
+        </Alert >)
+    }
+    else {
+      return null;
+    }
+
+  }, [error, message])
 
   const handleChange = (name: string) => (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    setFormData({ ...formData, error: "", [name]: e.target.value });
+    setFormData({ ...formData, error: '', [name]: e.target.value });
   };
 
   return (
     <Container
       maxWidth="sm"
-      style={{
-        marginTop: "10%",
-        border: "2px solid",
-        padding: "50px",
-        borderRadius: "20px",
-        backgroundColor: "white",
-      }}
+      className={classes2.container}
     >
       <Typography
         color="secondary"
         variant="h4"
-        style={{ textAlign: "center", marginBottom: "20px" }}
+        className={classes2.updateProfile}
       >
         UPDATE PROFILE
       </Typography>
@@ -161,7 +182,7 @@ const UpdateForm: React.FC<any> = ({ handleCloseEdit }: any) => {
           <Grid xs={12} item>
             <TextField
               InputLabelProps={{
-                style: { color: "#1F2634" },
+                style: { color: '#1F2634' },
               }}
               variant="outlined"
               color="primary"
@@ -172,13 +193,13 @@ const UpdateForm: React.FC<any> = ({ handleCloseEdit }: any) => {
               placeholder="username"
               type="text"
               fullWidth
-              onChange={handleChange("username")}
+              onChange={handleChange('username')}
             />
           </Grid>
           <Grid xs={12} item>
             <TextField
               InputLabelProps={{
-                style: { color: "#1F2634" },
+                style: { color: '#1F2634' },
               }}
               variant="outlined"
               color="primary"
@@ -189,14 +210,14 @@ const UpdateForm: React.FC<any> = ({ handleCloseEdit }: any) => {
               placeholder="email"
               type="email"
               fullWidth
-              onChange={handleChange("email")}
+              onChange={handleChange('email')}
             />
           </Grid>
 
           <Grid xs={12} item>
             <TextField
               InputLabelProps={{
-                style: { color: "#1F2634" },
+                style: { color: '#1F2634' },
               }}
               name="description"
               label="Description"
@@ -207,7 +228,7 @@ const UpdateForm: React.FC<any> = ({ handleCloseEdit }: any) => {
               variant="outlined"
               color="primary"
               fullWidth
-              onChange={handleChange("description")}
+              onChange={handleChange('description')}
             />
           </Grid>
           <Grid xs={12} item>
@@ -216,29 +237,27 @@ const UpdateForm: React.FC<any> = ({ handleCloseEdit }: any) => {
               defaultValue={data.user.country}
             />
           </Grid>
-          <Grid xs={4} item style={{ textAlign: "center" }}></Grid>
-          <Grid xs={4} item style={{ textAlign: "right" }}>
+          <Grid xs={4} item className={classes2.alignCenter} />
+          <Grid xs={4} item className={classes2.alignRight}>
             <Button
-              style={{ width: "70%" }}
+              className={`${classes.primaryButton} ${classes2.button}`}
               onClick={closeModalEdit}
-              className={classes.primaryButton}
             >
               CANCEL
             </Button>
           </Grid>
-          <Grid xs={4} item style={{ textAlign: "left" }}>
+          <Grid xs={4} item className={classes2.alignLeft}>
             <Button
-              className={classes.primaryButton}
-              style={{ width: "70%" }}
+              className={`${classes.primaryButton} ${classes2.button}`}
               type="submit"
+              onClick={handleShowMessage}
             >
               EDIT
             </Button>
           </Grid>
         </Grid>
       </form>
-      {showError()}
-      {showMessage()}
+      {handleShowMessage()}
     </Container>
   );
 };

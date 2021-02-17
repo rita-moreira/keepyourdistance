@@ -1,107 +1,106 @@
-import React from "react";
-import { API } from "../config";
+import React, { useMemo } from 'react';
+import {
+  Container, Typography, Grid, Button, createStyles, makeStyles, Theme,
+} from '@material-ui/core';
+import { API_BASE_URL } from '../config';
+import { useStyles } from '../theme/theme';
+import { getUsers } from '../actions/user';
+import Loading from './individual/Loading';
+import { measures } from "../fixtures/mainText"
 
-// material ui
-import { Container, Typography, Grid, Button } from "@material-ui/core";
+const useStylesPage = makeStyles((theme: Theme) => createStyles({
+  alignRight: {
+    textAlign: 'right'
+  },
+  alignLeft: {
+    textAlign: 'left'
+  },
+  container: {
+    marginTop: '15%',
+  },
+  grid: {
+    textAlign: 'center'
+  },
+  measures: {
+    marginTop: '40px'
+  }
 
-// custom theme
-import { useStyles } from "../theme/theme";
-
-// actions
-import { getUsers } from "../actions/user";
-
-// components
-import Loading from "../components/individual/Loading";
+}));
 
 const MainContent: React.FC = () => {
   const classes = useStyles();
-  const { data } = getUsers(`${API}/api/users`);
+  const classes2 = useStylesPage();
 
-  if (!data) {
-    return (
-      <div>
-        <Loading />
-      </div>
-    );
+  const { data } = getUsers(`${API_BASE_URL}/api/users`);
+
+  interface StateCountries {
+    _id: string;
+    country: string
   }
+  const countries = data ?
+    data.map((item: StateCountries) => item.country)
+      .filter((x: string, i: number, a: string[]) => a.indexOf(x) === i) : <Loading />;
 
-  // De quantos países diferentes são os users?
-  const countries = data
-    .map((item) => item.country)
-    .filter((x, i, a) => a.indexOf(x) === i);
 
-  const measures: { text1: string; text2: string }[] = [
-    {
-      text1: ".maximum of 10 people per room",
-      text2: `Everyone can join, currently we have ${data.length} registered users!`,
-    },
-    {
-      text1: ".ban on circulating between municipalities",
-      text2: `Allowed to visit the profiles of the users from ${countries.length} countries!`,
-    },
-    {
-      text1: ".compulsory curfew from 13h ",
-      text2: "Working 24 hours a day!",
-    },
-  ];
-
-  const renderMeasures = measures.map((measure) => {
-    return (
-      <React.Fragment key={measure.text1}>
-        <Grid container item xs={12} spacing={3}>
-          <Grid item xs={6}>
-            <Typography variant="subtitle1" style={{ textAlign: "right" }}>
-              {measure.text1}
-            </Typography>
+  const renderMeasures = useMemo(() =>
+    measures.map((measure, id) => {
+      if (data) {
+        return (
+          <Grid container item xs={12} spacing={3} key={measure.text1}>
+            <Grid item xs={6}>
+              <Typography variant="subtitle1" className={classes2.alignRight}>
+                {measure.text1}
+              </Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="subtitle2" className={classes2.alignLeft}>
+                {measure.text2} {id === 2 ? null : id === 0 ? data.length + measure.text3 : countries.length + measure.text3}
+              </Typography>
+            </Grid>
           </Grid>
-          <Grid item xs={6}>
-            <Typography variant="subtitle2" style={{ textAlign: "left" }}>
-              {measure.text2}
-            </Typography>
-          </Grid>
-        </Grid>
-      </React.Fragment>
-    );
-  });
+        )
+      } else {
+        return null
+      }
+    }), [data]);
+
   return (
-    <div>
-      <Container
-        maxWidth="lg"
-        style={{
-          marginTop: "15%",
-        }}
+    <Container
+      maxWidth="lg"
+      className={classes2.container}
+    >
+      <Grid
+        container
+        spacing={3}
+        justify="center"
+        alignContent="center"
+        alignItems="center"
+        className={classes2.grid}
       >
-        <Grid
-          container
-          spacing={3}
-          justify="center"
-          alignContent="center"
-          alignItems="center"
-          style={{ textAlign: "center" }}
-        >
-          <Grid item xs={12}>
-            <Typography color="primary" variant="h3">
-              KEEP YOUR DISTANCE
+        <Grid item xs={12}>
+          <Typography color="primary" variant="h3">
+            KEEP YOUR DISTANCE
             </Typography>
-          </Grid>
-          <Grid item xs={12}>
-            <Button className={classes.primaryButton} href="/register">
-              JOIN
-            </Button>
-          </Grid>
-          <Grid item xs={12}>
-            <Typography
-              color="primary"
-              variant="h5"
-              style={{ marginTop: "40px" }}
-            >
-              Measures
-            </Typography>
-          </Grid>
-          {renderMeasures}
         </Grid>
-      </Container>
-    </div>
+        <Grid item xs={12}>
+          <Button className={classes.primaryButton} href="/register">
+            JOIN
+            </Button>
+        </Grid>
+        <Grid item xs={12}>
+          <Typography
+            color="primary"
+            variant="h5"
+            className={classes2.measures}
+          >
+            Measures
+            </Typography>
+        </Grid>
+
+      </Grid>
+      {renderMeasures}
+    </Container>
+
   );
 };
 

@@ -1,41 +1,60 @@
-import React from "react";
+import React, { memo } from 'react';
 
-// material ui
-import { Grid, Typography, Paper } from "@material-ui/core";
-// icons
-import LocationOnIcon from "@material-ui/icons/LocationOn";
-import DescriptionIcon from "@material-ui/icons/Description";
+import { Grid, Typography, Paper, createStyles, makeStyles, Theme } from '@material-ui/core';
 
-import Avatar from "@material-ui/core/Avatar";
+import LocationOnIcon from '@material-ui/icons/LocationOn';
+import DescriptionIcon from '@material-ui/icons/Description';
 
-// theme
-import { useStyles } from "../../theme/theme";
+import Avatar from '@material-ui/core/Avatar';
+import { useStyles } from '../../theme/theme';
 
-const UserInfo = ({ username, country, description, photo }: any) => {
+
+const useStylesPage = makeStyles((theme: Theme) => createStyles({
+  paper: {
+    margin: '30px', minHeight: '300px'
+  },
+  grid: {
+    textAlign: 'center'
+  },
+  avatar: {
+    width: '100px',
+    height: '100px',
+    marginLeft: '50%',
+    transform: 'translate(-50%)',
+  },
+
+}));
+
+
+interface UserInfoProps {
+  username: string;
+  country: string;
+  description: string;
+  photo: string;
+}
+const UserInfo: React.FC<UserInfoProps> = ({
+  username, country, description, photo,
+}: UserInfoProps) => {
+
   const classes = useStyles();
+  const classes2 = useStylesPage()
   return (
-    <div>
+    <>
       <Paper
         square={false}
         elevation={5}
-        className={classes.backgroundColor}
-        style={{ margin: "30px", minHeight: "300px" }}
+        className={`${classes.backgroundColor} ${classes2.paper}`}
       >
         <Grid
           container
           spacing={3}
           justify="center"
           alignItems="center"
-          style={{ textAlign: "center" }}
+          className={classes2.grid}
         >
           <Grid item xs={12}>
             <Avatar
-              style={{
-                width: "100px",
-                height: "100px",
-                marginLeft: "50%",
-                transform: "translate(-50%)",
-              }}
+              className={classes2.avatar}
               src={photo}
               alt="Profile image"
             />
@@ -60,8 +79,8 @@ const UserInfo = ({ username, country, description, photo }: any) => {
           </Grid>
         </Grid>
       </Paper>
-    </div>
+    </>
   );
 };
 
-export default UserInfo;
+export default memo(UserInfo);

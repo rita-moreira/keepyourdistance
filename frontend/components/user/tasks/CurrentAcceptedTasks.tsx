@@ -1,27 +1,46 @@
-import React from "react";
-
-// material ui
+import React, { memo } from 'react';
 import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
   Typography,
   Button,
-} from "@material-ui/core";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-// theme
-import { useStyles } from "../../../theme/theme";
+  createStyles,
+  makeStyles,
+  Theme,
+} from '@material-ui/core';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { useStyles } from '../../../theme/theme';
+import { removeTask } from '../../../actions/userTasks';
+import { getCookie } from '../../../actions/cookies';
 
-// actions
-import { removeTask } from "../../../actions/userTasks";
-import { getCookie } from "../../../actions/cookies";
+
+const useStylesPage = makeStyles((theme: Theme) => createStyles({
+  title: {
+    fontFamily: 'GothamPro-Bold',
+    marginTop: '10px',
+    textAlign: 'left',
+  },
+  created: {
+    fontFamily: 'GothamPro-Bold',
+    marginTop: '10px',
+  },
+  description: {
+    width: '100%', textAlign: 'left'
+  },
+  button: {
+    textAlign: 'right'
+  },
+
+}));
+
 
 interface TaskProps {
   title: string;
   description: string;
   postedBy: string;
   _id: string;
-  mutate: any;
+  mutate: () => void;
 }
 const CurrentAcceptedTasks: React.FC<TaskProps> = ({
   title,
@@ -29,29 +48,23 @@ const CurrentAcceptedTasks: React.FC<TaskProps> = ({
   postedBy,
   _id,
   mutate,
-}: {
-  title: string;
-  description: string;
-  postedBy: string;
-  _id: string;
-  mutate: any;
-}) => {
+}: TaskProps) => {
   const classes = useStyles();
+  const classes2 = useStylesPage();
 
-  const handleUserTaskRemove = (title: string) => {
-    const token = getCookie("token");
-    removeTask(title, token).then((data: any) => {
-      if (data.error) {
-        console.log(data.error);
-      } else {
-        console.log(data.message);
-      }
-      mutate();
-    });
+  const handleUserTaskRemove = async (title: string) => {
+    const token = getCookie('token');
+    const response = await removeTask(title, token)
+    if (response.error) {
+      console.log(response.error);
+    } else {
+      console.log(response.message);
+    }
+    mutate();
   };
 
   return (
-    <div>
+    <>
       <Accordion className={classes.backgroundColor}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
@@ -61,42 +74,36 @@ const CurrentAcceptedTasks: React.FC<TaskProps> = ({
         >
           <Typography
             color="primary"
-            style={{
-              fontFamily: "GothamPro-Bold",
-              marginTop: "10px",
-              textAlign: "left",
-            }}
+            className={classes2.title}
           >
             {title.toUpperCase()}
           </Typography>
           <Typography
             color="primary"
-            style={{
-              fontFamily: "GothamPro-Bold",
-              marginTop: "10px",
-            }}
+            className={classes2.created}
           >
-            Created by: {postedBy.toUpperCase()}
+            Created by:
+            {' '}
+            {postedBy.toUpperCase()}
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Typography
             color="primary"
-            style={{ width: "100%", textAlign: "left" }}
+            className={classes2.description}
           >
             {description}
           </Typography>
           <Button
-            className={classes.primaryButton}
-            style={{ textAlign: "right" }}
+            className={`${classes.primaryButton} ${classes2.button}`}
             onClick={() => handleUserTaskRemove(title)}
           >
             Remove
           </Button>
         </AccordionDetails>
       </Accordion>
-    </div>
+    </>
   );
 };
 
-export default CurrentAcceptedTasks;
+export default memo(CurrentAcceptedTasks);

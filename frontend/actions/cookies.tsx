@@ -1,6 +1,7 @@
 // npm i --save-dev @types/cookie-cutter
-import Cookies from "universal-cookie";
-import { API } from "../config";
+import Cookies from 'universal-cookie';
+import { API_BASE_URL } from '../config';
+import axios from "axios";
 
 const cookies = new Cookies();
 
@@ -9,47 +10,49 @@ export const setCookie = (key: string, value: string) => {
   date.setDate(date.getDate() + 1);
 
   cookies.set(key, value, {
-    path: "/",
+    path: '/',
     expires: date,
-    domain: "localhost",
+    domain: 'localhost',
   });
 };
 
-export const getCookie = (key: string) => {
-  return cookies.get(key);
-};
+export const getCookie = (key: string) => cookies.get(key);
 
 export const removeCookie = (key: string) => {
-  cookies.remove(key, { path: "/", domain: "localhost" });
+  cookies.remove(key, { path: '/', domain: 'localhost' });
 };
 
-export const authenticate = (data: any, next: any) => {
-  setCookie("token", data.token);
-  setCookie("user", data.user);
 
+
+interface DataState {
+  token: string;
+  user: { username: string, _id: string, email: string };
+}
+
+export const authenticate = (data: DataState, next: () => void) => {
+  setCookie('token', data.token);
+  setCookie('user', data.user);
   next();
 };
 
 export const isAuth = () => {
-  const cookieCheck = getCookie("token");
+  const cookieCheck = getCookie('token');
   if (cookieCheck) {
-    return getCookie("user");
+    return getCookie('user');
   }
+  return false;
 };
 
-// signout
-export const signout = (next: any): any => {
+export const signout = async (next: () => void): Promise<void> => {
   if (process.browser) {
-    removeCookie("token");
-    removeCookie("user");
+    removeCookie('token');
+    removeCookie('user');
     next();
   }
-
-  return fetch(`${API}/api/signout`, {
-    method: "GET",
-  })
-    .then((response) => {
-      console.log("signout sucess");
-    })
-    .catch((err) => console.log(err));
+  try {
+    await axios.get(`${API_BASE_URL}/api/signout`, {});
+    console.log('signout sucess');
+  } catch (err) {
+    return console.log(err);
+  }
 };

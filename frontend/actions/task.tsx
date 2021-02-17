@@ -1,42 +1,43 @@
-import useSWR from "swr";
-import { API } from "../config";
+import { API_BASE_URL } from '../config';
+import axios from "axios";
 
-export const createTask = (task: any, token: any): any => {
-  return fetch(`${API}/api/task`, {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(task),
-  })
-    .then((response) => {
-      return response.json();
+interface TaskState {
+  title: string;
+  description: string;
+  currentTime: string
+}
+export const createTask = async (task: TaskState, token: string) => {
+  try {
+    const response = await axios({
+      url: `${API_BASE_URL}/api/task`,
+      method: "POST",
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      data: JSON.stringify(task),
     })
-    .catch((err) => console.log(err));
-};
-
-export function useFetch<Data = any, Error = any>(url: string) {
-  const { data, error, mutate } = useSWR<Data, Error>(url, async (url) => {
-    const response = await fetch(url);
-    const data = await response.json();
-    return data;
-  });
-  return { data, error, mutate };
+    return response.data
+  } catch (err) {
+    return err.response.data
+  }
 }
 
-export const removeTask = (title: string, token: string): any => {
-  return fetch(`${API}/api/task/${title}`, {
-    method: "DELETE",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  })
-    .then((response) => {
-      return response.json();
+
+export const removeTask = async (title: string, token: string) => {
+  try {
+    const response = await axios({
+      url: `${API_BASE_URL}/api/task/${title}`,
+      method: "DELETE",
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
     })
-    .catch((err) => console.log(err));
-};
+    return response.data
+  } catch (err) {
+    return err.response.data
+  }
+}

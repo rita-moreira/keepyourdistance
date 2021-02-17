@@ -1,32 +1,32 @@
-import React from "react";
-import Timeline from "@material-ui/lab/Timeline";
-import TimelineItem from "@material-ui/lab/TimelineItem";
-import TimelineSeparator from "@material-ui/lab/TimelineSeparator";
-import TimelineConnector from "@material-ui/lab/TimelineConnector";
-import TimelineContent from "@material-ui/lab/TimelineContent";
-import TimelineDot from "@material-ui/lab/TimelineDot";
-import { makeStyles } from "@material-ui/core";
+import React from 'react';
+import Timeline from '@material-ui/lab/Timeline';
+import TimelineItem from '@material-ui/lab/TimelineItem';
+import TimelineSeparator from '@material-ui/lab/TimelineSeparator';
+import TimelineConnector from '@material-ui/lab/TimelineConnector';
+import TimelineContent from '@material-ui/lab/TimelineContent';
+import TimelineDot from '@material-ui/lab/TimelineDot';
+import { makeStyles } from '@material-ui/core';
 
 const styles = makeStyles(() => ({
   text: {
-    color: "#EF7D1D",
-    fontFamily: "GothamPro-Bold",
+    color: '#EF7D1D',
+    fontFamily: 'GothamPro-Bold',
   },
   overline: {
     fontSize: 10,
-    textTransform: "uppercase",
+    textTransform: 'uppercase',
     letterSpacing: 1,
-    color: "black",
-    textAlign: "left",
-    width: "100%",
-    marginTop: "2px",
+    color: 'black',
+    textAlign: 'left',
+    width: '100%',
+    marginTop: '2px',
   },
   name: {
     fontSize: 14,
     fontWeight: 500,
-    color: "#495869",
-    textAlign: "left",
-    width: "100%",
+    color: '#495869',
+    textAlign: 'left',
+    width: '100%',
   },
 }));
 

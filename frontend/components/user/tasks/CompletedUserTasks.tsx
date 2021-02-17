@@ -1,82 +1,98 @@
-import React from "react";
-import { Avatar, Card, CardContent, CardHeader, Link } from "@material-ui/core";
+import React, { memo } from 'react';
+import {
+  Avatar, Card, CardContent, CardHeader, createStyles, Link, makeStyles, Theme,
+} from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
+import Loading from '../../individual/Loading';
+import AddUserComment from './comment/AddUserComment';
+import Comments from './comment/Comments';
+import { CompletedUserTasksProps } from "../../../interface/index"
 
-// components
-import Loading from "../../individual/Loading";
-import { Alert } from "@material-ui/lab";
-import AddUserComment from "./comment/AddUserComment";
-import Comments from "./comment/Comments";
 
-interface CompletedUserTasksProps {
-  userTasks: any;
-  mutate: () => void;
-}
-const CompletedUserTasks: React.FC<CompletedUserTasksProps> = ({
+const useStylesPage = makeStyles((theme: Theme) => createStyles({
+  root: {
+    padding: '10px',
+    width: '45%',
+    display: 'inline-block',
+    textAlign: 'left',
+  },
+  card: {
+    float: 'left'
+  },
+  avatar: {
+    width: '40px', height: '40px'
+  },
+  root2: {
+    textAlign: 'center', padding: '10px'
+  },
+  alert: {
+    color: 'white', backgroundColor: '#EF7D1D'
+  },
+}));
+
+
+const CompletedUserTasks: React.FC<{ userTasks: CompletedUserTasksProps, mutate: () => void }> = ({
   userTasks,
   mutate,
-}: CompletedUserTasksProps) => {
+}: { userTasks: CompletedUserTasksProps, mutate: () => void }) => {
+  const classes = useStylesPage();
   if (!userTasks) {
     return <Loading />;
   }
-  const completedUserTasks = userTasks.filter((item: any) => {
-    return item.completed;
-  });
+  const completedUserTasks = userTasks.filter((item: CompletedUserTasksProps) => item.completed);
   const currentTime = Date.now();
-  const tasks = completedUserTasks.map((task: any) => {
-    const diff: number = currentTime - Date.parse(task.updatedAt);
+  const tasks = completedUserTasks.map((task: CompletedUserTasksProps) => {
+    const diff: number = currentTime - Date.parse(task.createdAt);
     let date: string;
     if (diff > 86400e3) {
-      date = Math.floor(diff / 86400e3) + " days ago";
+      date = `${Math.floor(diff / 86400e3)} days ago`;
     } else if (diff > 3600e3 && diff < 86400e3) {
-      date = Math.floor(diff / 3600e3) + " hours ago";
+      date = `${Math.floor(diff / 3600e3)} hours ago`;
     } else if (diff > 60e3 && diff < 3600e3) {
-      date = Math.floor(diff / 60e3) + " minutes ago";
+      date = `${Math.floor(diff / 60e3)} minutes ago`;
     } else {
-      date = Math.floor(diff / 1e3) + " seconds ago";
+      date = `${Math.floor(diff / 1e3)} seconds ago`;
     }
     return (
       <div
         key={task._id}
-        style={{
-          padding: "10px",
-          width: "45%",
-          display: "inline-block",
-          textAlign: "left",
-        }}
+        className={classes.root}
       >
         <Card>
-          <div style={{ float: "left" }}>
+          <div className={classes.card}>
             <CardHeader
-              avatar={
+              avatar={(
                 <Avatar
                   sizes="small"
                   aria-label="recipe"
                   src={task.acceptedBy.photo}
                   alt="profile photo"
                 />
-              }
-              title={"TASK: " + task.title}
+              )}
+              title={`TASK: ${task.title}`}
               subheader={date}
             />
           </div>
           <div>
             <CardHeader
-              title={
+              title={(
                 <Link
                   href={`/user/${task.postedBy.username}`}
                   underline="always"
                   variant="body2"
                   color="textSecondary"
-                >{`Created by: ${task.postedBy.username}`}</Link>
-              }
-              avatar={
+                >
+                  {`Created by: ${task.postedBy.username}`}
+                </Link>
+              )}
+              avatar={(
                 <Avatar
-                  style={{ width: "40px", height: "40px" }}
+                  className={classes.avatar}
                   aria-label="recipe"
                   src={task.postedBy.photo}
                   alt="profile photo"
                 />
-              }
+              )}
             />
           </div>
 
@@ -87,7 +103,9 @@ const CompletedUserTasks: React.FC<CompletedUserTasksProps> = ({
               variant="body2"
               color="textSecondary"
             >
-              {task.acceptedBy.username}: {task.comment}
+              {task.acceptedBy.username}
+              :
+              {task.comment}
             </Link>
           </CardContent>
           <AddUserComment id={task._id} mutate={mutate} />
@@ -97,22 +115,22 @@ const CompletedUserTasks: React.FC<CompletedUserTasksProps> = ({
     );
   });
   return (
-    <div>
-      <div style={{ textAlign: "center", padding: "10px" }}>
-        {tasks.length > 0 ? (
-          tasks
-        ) : (
+
+    <div className={classes.root2}>
+      {tasks.length > 0 ? (
+        tasks
+      ) : (
           <Alert
             variant="filled"
             severity="info"
-            style={{ color: "white", backgroundColor: "#EF7D1D" }}
+            className={classes.alert}
           >
             There are currently no tasks completed from other users.
           </Alert>
         )}
-      </div>
     </div>
+
   );
 };
 
-export default CompletedUserTasks;
+export default memo(CompletedUserTasks);

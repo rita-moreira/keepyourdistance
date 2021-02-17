@@ -1,24 +1,58 @@
-import React from "react";
-import { GetServerSideProps } from "next";
-// components
-import NavBar from "../../components/navbar/NavBar";
-import Loading from "../../components/individual/Loading";
+import React from 'react';
+import { GetServerSideProps } from 'next';
 
-// theme
-import { useStyles } from "../../theme/theme";
+import {
+  Paper, Avatar, Divider, Typography, Grid, createStyles, makeStyles, Theme,
+} from '@material-ui/core';
+import NavBar from '../../components/navbar/NavBar';
+import Loading from '../../components/individual/Loading';
 
-// actions
-import { getUser } from "../../actions/user";
-import { API } from "../../config";
+import { useStyles } from '../../theme/theme';
 
-// material ui
-import { Paper, Avatar, Divider, Typography, Grid } from "@material-ui/core";
+import { getUser } from '../../actions/user';
+import { API_BASE_URL } from '../../config';
+
+const useStylesPage = makeStyles((theme: Theme) => createStyles({
+  root: {
+    height: '100vh'
+  },
+  paper: {
+    marginTop: '10%',
+    marginLeft: '50%',
+    transform: 'translate(-50%)',
+    width: '80%',
+    textAlign: 'center',
+    padding: '20px',
+  },
+  avatar: {
+    width: '100px',
+    height: '100px',
+    marginLeft: '50%',
+    transform: 'translate(-50%)',
+  },
+  mT10: {
+    marginTop: '10px'
+  },
+  mT20: {
+    marginTop: '20px'
+  },
+  values: {
+    color: '#EF7D1D', marginTop: '10px'
+  },
+
+}));
+
+
+// interface ParamsProps {
+//   username: string;
+// }
 
 const UsersProfile = ({ params }: any) => {
   const { username } = params;
   const classes = useStyles();
+  const classes2 = useStylesPage();
 
-  const { data, error } = getUser(`${API}/api/user/${username}`);
+  const { data, error } = getUser(`${API_BASE_URL}/api/user/${username}`);
 
   if (error) {
     return <div>Failed to load!</div>;
@@ -31,63 +65,51 @@ const UsersProfile = ({ params }: any) => {
     );
   }
 
-  const userTasksCompleted = data.userTasks.filter((item: any) => {
-    return item.completed;
-  });
+  const userTasksCompleted = data.userTasks.filter((item: any) => item.completed);
   return (
-    <div className={classes.backgroundColor} style={{ height: "100vh" }}>
+    <div className={`${classes.backgroundColor} ${classes2.root}`} >
       <NavBar />
       <Paper
         elevation={3}
-        style={{
-          marginTop: "10%",
-          marginLeft: "50%",
-          transform: "translate(-50%)",
-          width: "80%",
-          textAlign: "center",
-          padding: "20px",
-        }}
+        className={classes2.paper}
       >
         <Avatar
           alt="profile"
-          style={{
-            width: "100px",
-            height: "100px",
-            marginLeft: "50%",
-            transform: "translate(-50%)",
-          }}
+          className={classes2.avatar}
           src={data.user.photo}
         />
-        <Divider variant="middle" style={{ marginTop: "10px" }} />
+        <Divider variant="middle" className={classes2.mT10} />
         <div>
           <Typography color="secondary" variant="h4">
             {data.user.username}
           </Typography>
 
           <Typography color="textPrimary" variant="body2">
-            From: {data.user.country}
+            From:
+            {data.user.country}
           </Typography>
           <Typography color="textPrimary" variant="body2">
-            Description: {data.user.description}
+            Description:
+            {data.user.description}
           </Typography>
         </div>
-        <Divider variant="middle" style={{ marginTop: "20px" }} />
+        <Divider variant="middle" className={classes2.mT20} />
         <div>
           <Typography
             color="textPrimary"
             variant="h5"
-            style={{ marginTop: "20px" }}
+            className={classes2.mT20}
           >
             ACHIVEMENTS
           </Typography>
-          <Grid container spacing={3} style={{ marginTop: "20px" }}>
+          <Grid container spacing={3} className={classes2.mT20}>
             <Grid item xs>
               <Typography color="secondary" variant="subtitle2">
                 Tasks created active
               </Typography>
               <Typography
                 variant="body2"
-                style={{ color: "#EF7D1D", marginTop: "10px" }}
+                className={classes2.values}
               >
                 {data.tasks.length}
               </Typography>
@@ -98,7 +120,7 @@ const UsersProfile = ({ params }: any) => {
               </Typography>
               <Typography
                 variant="body2"
-                style={{ color: "#EF7D1D", marginTop: "10px" }}
+                className={classes2.values}
               >
                 {data.adminCompletedTasks.length}
               </Typography>
@@ -109,7 +131,7 @@ const UsersProfile = ({ params }: any) => {
               </Typography>
               <Typography
                 variant="body2"
-                style={{ color: "#EF7D1D", marginTop: "10px" }}
+                className={classes2.values}
               >
                 {userTasksCompleted.length}
               </Typography>
@@ -121,10 +143,8 @@ const UsersProfile = ({ params }: any) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  return {
-    props: { params: context.params },
-  };
-};
+export const getServerSideProps: GetServerSideProps = async (context) => ({
+  props: { params: context.params },
+});
 
 export default UsersProfile;

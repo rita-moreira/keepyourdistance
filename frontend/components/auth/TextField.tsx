@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
-// material ui
-import { IconButton, InputAdornment, TextField } from "@material-ui/core";
-import { Visibility, VisibilityOff } from "@material-ui/icons";
+import { IconButton, InputAdornment, TextField } from '@material-ui/core';
+import { Visibility, VisibilityOff } from '@material-ui/icons';
 
 interface TextFieldProps {
   name: string;
@@ -12,13 +11,15 @@ interface TextFieldProps {
   onChange: React.ChangeEventHandler<HTMLInputElement>;
 }
 
-const TextFieldInput = ({
+const TextFieldInput: React.FC<TextFieldProps> = ({
   name,
   placeholder,
   value,
   type,
   onChange,
 }: TextFieldProps) => {
+
+
   const [showPassword, setShowPassword] = useState<boolean>(false);
   // show/hide password
   const handleShowPassword = () => {
@@ -26,7 +27,7 @@ const TextFieldInput = ({
   };
   // custom style
   const inputPropsPassword = {
-    style: { color: "grey", fontFamily: "GothamPro-Bold" },
+    style: { color: 'grey', fontFamily: 'GothamPro-Bold' },
     endAdornment: (
       <InputAdornment position="end">
         <IconButton
@@ -39,16 +40,16 @@ const TextFieldInput = ({
     ),
   };
   const inputProps = {
-    style: { color: "grey" },
+    style: { color: 'grey' },
   };
   return (
-    <React.Fragment>
+    <>
       <TextField
         InputLabelProps={{
-          style: { color: "#D58643" },
+          style: { color: '#D58643' },
         }}
         InputProps={
-          name !== "password" && name !== "confirmPassword"
+          name !== 'password' && name !== 'confirmPassword'
             ? inputProps
             : inputPropsPassword
         }
@@ -60,16 +61,16 @@ const TextFieldInput = ({
         required
         placeholder={placeholder}
         type={
-          name !== "password" && name !== "confirmPassword"
+          name !== 'password' && name !== 'confirmPassword'
             ? type
             : showPassword
-            ? "text"
-            : "password"
+              ? 'text'
+              : 'password'
         }
         fullWidth
         onChange={onChange}
       />
-    </React.Fragment>
+    </>
   );
 };
 

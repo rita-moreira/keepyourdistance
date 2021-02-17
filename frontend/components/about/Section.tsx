@@ -1,34 +1,42 @@
-import React from "react";
+import React, { memo } from 'react';
+import { Card, CardContent, createStyles, makeStyles, Theme, Typography } from '@material-ui/core';
 
-// material ui
-import { Card, CardContent, Typography } from "@material-ui/core";
+const useStyles = makeStyles((theme: Theme) => createStyles({
+  root: {
+    padding: '50px'
+  },
+  text: {
+    width: '50%', marginTop: '20px'
+  },
+  card: {
+    marginLeft: '25%', marginTop: '100px'
+  }
+}));
 
 interface SectionProps {
   title: string;
   text: string;
   video: string;
 }
-const Section: React.FC<SectionProps> = ({
-  title,
-  text,
-  video,
-}: SectionProps) => {
+const Section: React.FC<SectionProps> = ({ title, text, video, }: SectionProps) => {
+  const classes = useStyles();
   return (
-    <div style={{ padding: "50px" }}>
+    <div className={classes.root}>
       <Typography variant="h3" color="secondary">
         {title}
       </Typography>
       <Typography
         variant="body2"
         color="primary"
-        style={{ width: "50%", marginTop: "20px" }}
+        className={classes.text}
       >
         {text}
       </Typography>
-      <div style={{ marginLeft: "25%", marginTop: "100px" }}>
+      <div className={classes.card}>
         <Card>
           <CardContent>
             <iframe
+              title={video}
               width="100%"
               height="500px"
               src={video}
@@ -41,6 +49,6 @@ const Section: React.FC<SectionProps> = ({
       </div>
     </div>
   );
-};
+}
 
-export default Section;
+export default memo(Section);

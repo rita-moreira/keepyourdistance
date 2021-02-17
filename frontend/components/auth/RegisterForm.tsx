@@ -1,36 +1,47 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from 'react';
+import {
+  Container, Grid, Link, Typography, Button, makeStyles, createStyles,
+} from '@material-ui/core';
+import Alert from '@material-ui/lab/Alert';
+import { useStyles } from '../../theme/theme';
+import { StateRegisterFormValues } from '../../interface/index';
+import TextFieldInput from './TextField';
+import { signUp } from '../../actions/auth';
 
-// material ui
-import { Container, Grid, Link, Typography, Button } from "@material-ui/core";
-// npm install @material-ui/lab
-import Alert from "@material-ui/lab/Alert";
 
-// custom material ui
-import { useStyles } from "../../theme/theme";
+const useStylesPage = makeStyles((theme) => createStyles({
+  root: {
+    border: '2px solid',
+    padding: '50px',
+    borderRadius: '20px',
+    marginTop: '5%',
+  },
+  loginText: {
+    textAlign: 'center',
+    marginBottom: '20px',
+  },
+  center: {
+    textAlign: "center"
+  }
 
-// import interface
-import { StateRegisterFormValues } from "../../interface/types";
+}));
 
-// components
-import TextFieldInput from "./TextField";
-
-// actions
-import { signup } from "../../actions/auth";
 
 const initialValues = {
-  username: "",
-  email: "",
-  password: "",
-  confirmPassword: "",
-  error: "",
-  message: "",
+  username: '',
+  email: '',
+  password: '',
+  confirmPassword: '',
+  error: '',
+  message: '',
 };
 const RegisterForm: React.FC = () => {
   const [formData, setFormData] = useState<StateRegisterFormValues>(
-    initialValues
+    initialValues,
   );
 
   const classes = useStyles();
+  const classes2 = useStylesPage();
   const {
     username,
     email,
@@ -43,126 +54,126 @@ const RegisterForm: React.FC = () => {
   // handleSubmit
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setFormData({ ...formData, error: "" });
+    setFormData({ ...formData, error: '' });
 
-    const user = { username, email, password, confirmPassword };
+    const user = {
+      username, email, password, confirmPassword,
+    };
 
-    signup(user).then((data: { error: string; message: string }) => {
+    signUp(user).then((data: { error: string; message: string }) => {
       console.log(error, message);
       if (data.error) {
         setFormData({ ...formData, error: data.error });
       } else {
         setFormData({
           ...formData,
-          username: "",
-          email: "",
-          password: "",
-          confirmPassword: "",
-          error: "",
+          username: '',
+          email: '',
+          password: '',
+          confirmPassword: '',
+          error: '',
           message: data.message,
         });
       }
     });
   };
 
-  // show error
-  const showError = () =>
-    error ? (
-      <Alert variant="filled" severity="error">
-        {error}
-      </Alert>
-    ) : null;
+  const handleShowMessage = useCallback(() => {
+    if (error) {
+      return (
+        <Alert variant="filled" severity="error" >
+          {error}
+        </Alert >)
+    }
+    else if (message && !error) {
+      return (
+        <Alert variant="filled" severity="success" >
+          {message}
+        </Alert >)
+    }
+    else {
+      return null;
+    }
 
-  // show message
-  const showMessage = () =>
-    message && !error ? (
-      <Alert variant="filled" severity="success">
-        {message}
-      </Alert>
-    ) : null;
+  }, [error, message])
   // handleChange
   const handleChange = (name: string) => (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setFormData({ ...formData, [name]: e.target.value });
   };
 
   return (
-    <Container
-      maxWidth="sm"
-      className={classes.backgroundColor}
-      style={{
-        border: "2px solid",
-        padding: "50px",
-        borderRadius: "20px",
-        marginTop: "5%",
-      }}
-    >
-      <Typography
-        color="primary"
-        variant="h4"
-        style={{
-          textAlign: "center",
-          marginBottom: "20px",
-        }}
-      >
-        REGISTER
-      </Typography>
-      <form autoComplete="off" noValidate onSubmit={handleSubmit}>
-        <Grid container spacing={3} justify="center" alignItems="center">
-          <Grid xs={12} item>
-            <TextFieldInput
-              name="username"
-              placeholder="Username"
-              value={username}
-              type="text"
-              onChange={handleChange("username")}
-            />
-          </Grid>
+    <div className={classes.backgroundColor}>
+      <Container
+        maxWidth="sm"
+        className={classes2.root}
 
-          <Grid xs={12} item>
-            <TextFieldInput
-              name="email"
-              placeholder="Email"
-              value={email}
-              type="email"
-              onChange={handleChange("email")}
-            />
-          </Grid>
-          <Grid xs={12} item>
-            <TextFieldInput
-              name="password"
-              placeholder="Password"
-              value={password}
-              onChange={handleChange("password")}
-            />
-          </Grid>
-          <Grid xs={12} item>
-            <TextFieldInput
-              name="confirmPassword"
-              placeholder="Confirm Password"
-              value={confirmPassword}
-              onChange={handleChange("confirmPassword")}
-            />
-          </Grid>
-          <Grid xs={12} item style={{ textAlign: "center" }}>
-            <Button className={classes.primaryButton} type="submit">
-              REGISTER
+      >
+        <Typography
+          color="primary"
+          variant="h4"
+          className={classes2.loginText}
+        >
+          REGISTER
+      </Typography>
+        <form autoComplete="off" noValidate onSubmit={handleSubmit}>
+          <Grid container spacing={3} justify="center" alignItems="center">
+            <Grid xs={12} item>
+              <TextFieldInput
+                name="username"
+                placeholder="Username"
+                value={username}
+                type="text"
+                onChange={handleChange('username')}
+              />
+            </Grid>
+
+            <Grid xs={12} item>
+              <TextFieldInput
+                name="email"
+                placeholder="Email"
+                value={email}
+                type="email"
+                onChange={handleChange('email')}
+              />
+            </Grid>
+            <Grid xs={12} item>
+              <TextFieldInput
+                name="password"
+                placeholder="Password"
+                value={password}
+                onChange={handleChange('password')}
+              />
+            </Grid>
+            <Grid xs={12} item>
+              <TextFieldInput
+                name="confirmPassword"
+                placeholder="Confirm Password"
+                value={confirmPassword}
+                onChange={handleChange('confirmPassword')}
+              />
+            </Grid>
+            <Grid xs={12} item className={classes2.center}>
+              <Button className={classes.primaryButton} type="submit" onClick={handleShowMessage}>
+                REGISTER
             </Button>
-          </Grid>
-          <Grid xs={12} item style={{ textAlign: "center" }}>
-            <Typography color="primary" variant="subtitle2">
-              Already have an account?{" "}
-              <Link href="/login" underline="always">
-                Login
+            </Grid>
+            <Grid xs={12} item className={classes2.center}>
+              <Typography color="primary" variant="subtitle2">
+                Already have an account?
+              {' '}
+                <Link href="/login" underline="always">
+                  Login
               </Link>
-            </Typography>
+              </Typography>
+            </Grid>
           </Grid>
-        </Grid>
-      </form>
-      {showError()}
-      {showMessage()}
-    </Container>
+        </form>
+        {handleShowMessage()}
+
+      </Container>
+    </div>
   );
 };
 

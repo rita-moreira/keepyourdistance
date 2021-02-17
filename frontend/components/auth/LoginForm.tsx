@@ -1,146 +1,148 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useCallback } from 'react';
 
-// material ui
-import { Container, Grid, Link, Typography, Button } from "@material-ui/core";
-import Alert from "@material-ui/lab/Alert";
+import {
+  Container, Grid, Link, Typography, Button, makeStyles, createStyles,
+} from '@material-ui/core';
+import Alert from '@material-ui/lab/Alert';
+import { useRouter } from 'next/router';
+import { useStyles } from '../../theme/theme';
+import { StateLoginFormValues } from '../../interface/index';
+import TextFieldInput from './TextField';
+import { signIn } from '../../actions/auth';
+import { authenticate, isAuth } from '../../actions/cookies';
+import { AuthContext } from '../../contexts/AuthContext';
 
-// custom material ui
-import { useStyles } from "../../theme/theme";
 
-// import interface
-import { StateLoginFormValues } from "../../interface/types";
+const useStylesPage = makeStyles((theme) => createStyles({
+  root: {
+    border: '2px solid',
+    padding: '50px',
+    borderRadius: '20px',
+    marginTop: '5%',
+  },
+  loginText: {
+    textAlign: 'center',
+    marginBottom: '20px',
+  },
+  center: {
+    textAlign: "center"
+  }
 
-// components
-import TextFieldInput from "./TextField";
-import { signin } from "../../actions/auth";
+}));
 
-// actions
-import { authenticate, isAuth } from "../../actions/cookies";
-
-// router -- next
-import Router from "next/router";
-
-// context
-import { AuthContext } from "../../contexts/AuthContext";
 
 const initialValues = {
-  email: "",
-  password: "",
-  error: "",
-  message: "",
+  email: '',
+  password: '',
+  error: '',
+  message: '',
 };
 const LoginForm: React.FC = () => {
+  const router = useRouter();
   const [formData, setFormData] = useState<StateLoginFormValues>(initialValues);
   const { setAuth } = useContext(AuthContext);
   const classes = useStyles();
-  const { email, password, error, message } = formData;
+  const classes2 = useStylesPage();
+  const {
+    email, password, error, message,
+  } = formData;
 
-  // show error
-  const showError = () =>
-    error ? (
-      <Alert variant="filled" severity="error">
-        {error}
-      </Alert>
-    ) : null;
+  const handleShowMessage = useCallback(() => {
+    if (error) {
+      return (
+        <Alert variant="filled" severity="error" >
+          {error}
+        </Alert >)
+    }
+    else if (message && !error) {
+      return (
+        <Alert variant="filled" severity="success" >
+          {message}
+        </Alert >)
+    }
+    else {
+      return null;
+    }
 
-  // show message
-  const showMessage = () =>
-    message && !error ? (
-      <Alert variant="filled" severity="success">
-        {message}
-      </Alert>
-    ) : null;
+  }, [error, message])
+
   // handleChange
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
   // handleSubmit
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setFormData({ ...formData, error: "" });
+    setFormData({ ...formData, error: '' });
     const user = { email, password };
-
-    signin(user).then((data: { error: string; message: string }) => {
-      if (data.error) {
-        setFormData({ ...formData, error: data.error });
-      } else {
-        // save user token to cookie
-        // save user info to cookie
-        // authenticate user
-
-        authenticate(data, () => {
-          if (isAuth()) {
-            setAuth(isAuth());
-            Router.push(`/profile/${isAuth().username}`);
-          }
-        });
-      }
-    });
+    const data = await signIn(user);
+    if (data.error) {
+      setFormData({ ...formData, error: data.error });
+    } else {
+      authenticate(data, () => {
+        if (isAuth()) {
+          setAuth(isAuth());
+          router.push(`/profile/${isAuth().username}`);
+        }
+      });
+    }
   };
 
   return (
-    <Container
-      maxWidth="sm"
-      className={classes.backgroundColor}
-      style={{
-        border: "2px solid",
-        padding: "50px",
-        borderRadius: "20px",
-        marginTop: "5%",
-      }}
-    >
-      <Typography
-        color="primary"
-        variant="h4"
-        style={{
-          textAlign: "center",
-          marginBottom: "20px",
-        }}
+    <div className={classes.backgroundColor}>
+      <Container
+        maxWidth="sm"
+        className={classes2.root}
       >
-        LOGIN
+        <Typography
+          color="primary"
+          variant="h4"
+          className={classes2.loginText}
+        >
+          LOGIN
       </Typography>
-      <form autoComplete="off" noValidate onSubmit={handleSubmit}>
-        <Grid container spacing={3} justify="center" alignItems="center">
-          <Grid xs={12} item>
-            <TextFieldInput
-              name="email"
-              placeholder="Email"
-              value={email}
-              type="email"
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid xs={12} item>
-            <TextFieldInput
-              name="password"
-              placeholder="Password"
-              value={password}
-              onChange={handleChange}
-            />
-          </Grid>
-          {/* <Grid xs={12} item style={{ textAlign: "right" }}>
+        <form autoComplete="off" noValidate onSubmit={handleSubmit}>
+          <Grid container spacing={3} justify="center" alignItems="center">
+            <Grid xs={12} item>
+              <TextFieldInput
+                name="email"
+                placeholder="Email"
+                value={email}
+                type="email"
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid xs={12} item>
+              <TextFieldInput
+                name="password"
+                placeholder="Password"
+                value={password}
+                onChange={handleChange}
+              />
+            </Grid>
+            {/* <Grid xs={12} item style={{ textAlign: "right" }}>
             <Link variant="subtitle2" style={{ color: "#646464" }}>
               Forgot password?
             </Link>
           </Grid> */}
-          <Grid xs={12} item style={{ textAlign: "center" }}>
-            <Button className={classes.primaryButton} type="submit">
-              LOGIN
+            <Grid xs={12} item className={classes2.center}>
+              <Button className={classes.primaryButton} type="submit" onClick={handleShowMessage}>
+                LOGIN
             </Button>
-          </Grid>
-          <Grid xs={12} item style={{ textAlign: "center" }}>
-            <Typography color="primary" variant="subtitle2">
-              Dont have an account?{" "}
-              <Link href="/register" underline="always">
-                Register
+            </Grid>
+            <Grid xs={12} item className={classes2.center}>
+              <Typography color="primary" variant="subtitle2">
+                Dont have an account?
+                <Link href="/register" underline="always">
+                  Register
               </Link>
-            </Typography>
+              </Typography>
+            </Grid>
           </Grid>
-        </Grid>
-      </form>
-      {showError()}
-      {showMessage()}
-    </Container>
+        </form>
+        {handleShowMessage()}
+      </Container >
+    </div>
   );
 };
 

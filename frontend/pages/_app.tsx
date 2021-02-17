@@ -1,34 +1,22 @@
-import React, { useState } from "react";
-// https://nextjs.org/learn/excel/typescript/nextjs-types --> custom App --> convert to .tsx
-import { AppProps } from "next/app";
-// import font roboto
-import "fontsource-roboto";
-// import gotham font
-import "../public/fonts.css";
-
-// import context
-import { ThemeContext } from "../contexts/ThemeContext";
-import { AuthContext } from "../contexts/AuthContext";
-
-// material ui
-import { ThemeProvider } from "@material-ui/core";
-// custom themes
-import { theme, darkTheme } from "../theme/theme";
-
-// actions
-import { getCookie } from "../actions/cookies";
-import Head from "next/head";
+import React, { useState } from 'react';
+import { AppProps } from 'next/app';
+import 'fontsource-roboto';
+import '../public/fonts.css';
+import { ThemeProvider } from '@material-ui/core';
+import Head from 'next/head';
+import { ThemeContext } from '../contexts/ThemeContext';
+import { AuthContext } from '../contexts/AuthContext';
+import { theme, darkTheme } from '../theme/theme';
+import { getCookie } from '../actions/cookies';
 
 function App({ Component, pageProps }: AppProps) {
-  const themeCookie = getCookie("theme");
+  const themeCookie = getCookie('theme');
   const [themeMode, setThemeMode] = useState<string>(themeCookie);
-  const authCookie = getCookie("user");
+  const authCookie = getCookie('user');
   const [auth, setAuth] = useState<{
-    id: string;
+    _id: string;
     username: string;
     email: string;
-    password: string;
-    progress: number;
   }>(authCookie);
   return (
     <>
@@ -37,7 +25,7 @@ function App({ Component, pageProps }: AppProps) {
       </Head>
       <ThemeContext.Provider value={{ themeMode, setThemeMode }}>
         <AuthContext.Provider value={{ auth, setAuth }}>
-          <ThemeProvider theme={themeMode === "light" ? theme : darkTheme}>
+          <ThemeProvider theme={themeMode === 'light' ? theme : darkTheme}>
             <Component {...pageProps} />
           </ThemeProvider>
         </AuthContext.Provider>

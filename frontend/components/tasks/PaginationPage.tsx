@@ -1,5 +1,16 @@
-import React, { useEffect, useState } from "react";
-import Pagination from "@material-ui/lab/Pagination";
+import React, { useEffect, useState } from 'react';
+import Pagination from '@material-ui/lab/Pagination';
+import { makeStyles, Theme, createStyles } from '@material-ui/core';
+
+
+const useStylesPage = makeStyles((theme: Theme) => createStyles({
+  root: {
+    display: 'flex',
+    justifyContent: 'center',
+  },
+}));
+
+
 interface PaginationPageProps {
   tasksPerPage: number;
   totalTasks: number;
@@ -11,12 +22,8 @@ const PaginationPage: React.FC<PaginationPageProps> = ({
   totalTasks,
   currentPage,
   setPage,
-}: {
-  tasksPerPage: number;
-  totalTasks: number;
-  currentPage: number;
-  setPage: (currentPage: number) => void;
-}) => {
+}: PaginationPageProps) => {
+  const classes = useStylesPage();
   const [pageNumbers, setPageNumbers] = useState(1);
 
   useEffect(() => {
@@ -28,10 +35,7 @@ const PaginationPage: React.FC<PaginationPageProps> = ({
 
   return (
     <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-      }}
+      className={classes.root}
     >
       <Pagination
         count={pageNumbers}

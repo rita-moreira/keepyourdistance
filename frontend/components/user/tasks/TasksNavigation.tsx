@@ -1,9 +1,13 @@
-import { Paper, Tab, Tabs } from "@material-ui/core";
-import React, { useState } from "react";
+import { Paper, Tab, Tabs } from '@material-ui/core';
+import React, { useState } from 'react';
 
-// theme
-import { useStyles } from "../../../theme/theme";
-const TasksNavigation: React.FC<any> = ({ handleShowTasks }: any) => {
+import { useStyles } from '../../../theme/theme';
+
+interface TasksNavigationProps {
+  handleShowTasks: (value: number) => void
+}
+
+const TasksNavigation: React.FC<TasksNavigationProps> = ({ handleShowTasks }: TasksNavigationProps) => {
   const classes = useStyles();
   const [value, setValue] = useState(0);
 
@@ -13,14 +17,14 @@ const TasksNavigation: React.FC<any> = ({ handleShowTasks }: any) => {
   };
 
   return (
-    <React.Fragment>
+    <>
       <Paper
         square
         elevation={3}
         className={classes.backgroundColor}
         style={{
-          width: "50%",
-          margin: "auto",
+          width: '50%',
+          margin: 'auto',
         }}
       >
         <Tabs
@@ -36,7 +40,7 @@ const TasksNavigation: React.FC<any> = ({ handleShowTasks }: any) => {
           <Tab color="primary" label="TASKS CREATED" />
         </Tabs>
       </Paper>
-    </React.Fragment>
+    </>
   );
 };
 

@@ -1,12 +1,12 @@
 import React, { createContext } from "react";
 
 interface AuthContextType {
-  auth: { id: string; username: string; email: string; password: string };
+  auth: { _id: string; username: string; email: string };
   setAuth: React.Dispatch<
-    React.SetStateAction<{ username: string; email: string; password: string }>
+    React.SetStateAction<{ _id: string; username: string; email: string }>
   >;
 }
 export const AuthContext = createContext<AuthContextType>({
-  auth: { id: "", username: "", email: "", password: "" },
+  auth: { _id: "", username: "", email: "" },
   setAuth: (auth: {}) => auth,
 });

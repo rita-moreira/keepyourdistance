@@ -1,45 +1,48 @@
-import { API } from "../config";
-import useSWR from "swr";
+import { API_BASE_URL } from '../config';
+import axios from "axios";
 
-export const completeTask = (task: any, token: any): any => {
-  return fetch(`${API}/api/adminTask`, {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(task),
-  })
-    .then((response) => {
-      return response.json();
+interface TaskState {
+  title: string,
+  share: boolean,
+  description: string
+  comment: string
+}
+export const completeTask = async (task: TaskState, token: string) => {
+  try {
+    const response = await axios({
+      url: `${API_BASE_URL}/api/adminTask`,
+      method: "POST",
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      data: JSON.stringify(task),
     })
-    .catch((err) => console.log(err));
-};
-
-export function useFetch<Data = any, Error = any>(url: string) {
-  const { data, error, mutate } = useSWR<Data, Error>(url, async (url) => {
-    const response = await fetch(url);
-    const data = await response.json();
-    return data;
-  });
-  return { data, error, mutate };
+    return response.data
+  } catch (err) {
+    return err.response.data
+  }
 }
 
-// add comment
-
-export const addComment = (comment: any, token: any): any => {
-  return fetch(`${API}/api/comments`, {
-    method: "PUT",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(comment),
-  })
-    .then((response) => {
-      return response.json();
+interface CommentState {
+  comment: string;
+  task_id: string
+}
+export const addComment = async (comment: CommentState, token: string) => {
+  try {
+    const response = await axios({
+      url: `${API_BASE_URL}/api/comments`,
+      method: "PUT",
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      data: JSON.stringify(comment),
     })
-    .catch((err) => console.log(err));
-};
+    return response.data
+  } catch (err) {
+    return err.response.data
+  }
+}

@@ -5,25 +5,51 @@ import {
   Grid,
   Typography,
   Button,
-} from "@material-ui/core";
-import React, { useState } from "react";
+  createStyles,
+  makeStyles,
+  Theme,
+} from '@material-ui/core';
+import React, { useCallback, useState } from 'react';
+import { Alert } from '@material-ui/lab';
+import { StateCompleteFormValues } from '../../../interface/index';
+import { useStyles } from '../../../theme/theme';
+import TextFieldInput from '../../auth/TextField';
+import { update } from '../../../actions/user';
+import { completeTask } from '../../../actions/adminTask';
+import { getCookie } from '../../../actions/cookies';
+import { CompleteTaskUser } from "../../../interface/index"
 
-// interface
-import { StateCompleteFormValues } from "../../../interface/types";
-import { useStyles } from "../../../theme/theme";
-import TextFieldInput from "../../auth/TextField";
+const useStylesPage = makeStyles((theme: Theme) => createStyles({
+  container: {
+    border: '2px solid',
+    padding: '50px',
+    borderRadius: '20px',
+    marginTop: '5%',
+  },
+  typography: {
+    textAlign: 'center',
+    marginBottom: '20px',
+  },
+  alignCenter: {
+    textAlign: "center"
+  },
+  alignLeft: {
+    textAlign: "left"
+  },
+  alignRight: {
+    textAlign: "right"
+  },
+  button: {
+    width: "70%"
+  }
+}));
 
-// actions
-import { update } from "../../../actions/user";
-import { completeTask } from "../../../actions/adminTask";
-import { getCookie } from "../../../actions/cookies";
-import { Alert } from "@material-ui/lab";
 
 interface CompleteTaskModalProps {
   defaultTitle: string;
   defaultDescription: string;
   handleClose: (value: boolean) => void;
-  user: any;
+  user: CompleteTaskUser;
   progressValue: number;
   mutate: () => void;
 }
@@ -36,22 +62,26 @@ const CompleteTaskModal: React.FC<CompleteTaskModalProps> = ({
   progressValue,
   mutate,
 }: CompleteTaskModalProps) => {
+
   const classes = useStyles();
+  const classes2 = useStylesPage();
   const initialValues = {
     title: defaultTitle,
     description: defaultDescription,
-    comment: "",
+    comment: '',
     share: true,
-    error: "",
-    message: "",
+    error: '',
+    message: '',
   };
   const [formData, setFormData] = useState<StateCompleteFormValues>(
-    initialValues
+    initialValues,
   );
   const closeModal = () => {
     handleClose(false);
   };
-  const { title, description, comment, share, error, message } = formData;
+  const {
+    title, description, comment, share, error, message,
+  } = formData;
 
   // handleChange
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,27 +90,32 @@ const CompleteTaskModal: React.FC<CompleteTaskModalProps> = ({
   const toggleChecked = () => {
     setFormData({ ...formData, share: !share });
   };
-  // show error
-  const showError = () =>
-    error ? (
-      <Alert variant="filled" severity="error">
-        {error}
-      </Alert>
-    ) : null;
+  const handleShowMessage = useCallback(() => {
+    if (error) {
+      return (
+        <Alert variant="filled" severity="error" >
+          {error}
+        </Alert >)
+    }
+    else if (message && !error) {
+      return (
+        <Alert variant="filled" severity="success" >
+          {message}
+        </Alert >)
+    }
+    else {
+      return null;
+    }
 
-  // show message
-  const showMessage = () =>
-    message && !error ? (
-      <Alert variant="filled" severity="success">
-        {message}
-      </Alert>
-    ) : null;
+  }, [error, message])
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    setFormData({ ...formData, error: "" });
-    const { _id, username, email, country, description, photo } = user;
+    setFormData({ ...formData, error: '' });
+    const {
+      _id, username, email, country, description, photo,
+    } = user;
 
     const taskData = {
       title,
@@ -88,57 +123,43 @@ const CompleteTaskModal: React.FC<CompleteTaskModalProps> = ({
       comment,
       share,
     };
-    const token = getCookie("token");
-    completeTask(taskData, token).then((data: any) => {
-      if (data.error) {
-        setFormData({ ...formData, error: data.error });
-      } else {
-        setFormData({
-          ...formData,
-          error: "",
-          message: data.message,
-        });
-        const userData = {
-          _id,
-          username,
-          email,
-          country,
-          description,
-          photo,
-          progress: progressValue + 1,
-        };
-        update(userData).then((data: any) => {
-          if (data.error) {
-            console.log(data.error);
-          } else {
-            console.log(data.message);
-          }
-        });
+    const token = getCookie('token');
 
-        handleClose(false);
-      }
+    const response = await completeTask(taskData, token)
+    if (response.error) {
+      setFormData({ ...formData, error: response.error });
+    } else {
+      setFormData({
+        ...formData,
+        error: '',
+        message: response.message,
+      });
+      const userData = {
+        _id,
+        username,
+        email,
+        country,
+        description,
+        photo,
+        progress: progressValue + 1,
+      };
+      update(userData);
+      handleClose(false);
       mutate();
-    });
+    }
+    mutate();
   };
 
   return (
     <Container
       maxWidth="sm"
-      className={classes.backgroundColor}
-      style={{
-        border: "2px solid",
-        padding: "50px",
-        borderRadius: "20px",
-        marginTop: "5%",
-      }}
+      className={`${classes.backgroundColor} ${classes2.container}`}
+
     >
       <Typography
         color="primary"
         variant="h4"
-        style={{
-          textAlign: "center",
-          marginBottom: "20px",
-        }}
+        className={classes2.typography}
       >
         COMPLETE TASK
       </Typography>
@@ -162,43 +183,42 @@ const CompleteTaskModal: React.FC<CompleteTaskModalProps> = ({
           <Grid xs={12} item>
             <FormControlLabel
               labelPlacement="start"
-              control={
+              control={(
                 <Switch
                   checked={share}
                   onChange={toggleChecked}
                   color="primary"
                 />
-              }
-              label={
+              )}
+              label={(
                 <Typography color="primary" variant="body1">
                   Share
                 </Typography>
-              }
+              )}
             />
           </Grid>
-          <Grid xs={4} item style={{ textAlign: "center" }}></Grid>
-          <Grid xs={4} item style={{ textAlign: "right" }}>
+          <Grid xs={4} item className={classes2.alignCenter} />
+          <Grid xs={4} item className={classes2.alignRight}>
             <Button
-              style={{ width: "70%" }}
+
               onClick={closeModal}
-              className={classes.primaryButton}
+              className={`${classes.primaryButton} ${classes2.button}`}
             >
               CANCEL
             </Button>
           </Grid>
-          <Grid xs={4} item style={{ textAlign: "left" }}>
+          <Grid xs={4} item className={classes2.alignLeft}>
             <Button
-              style={{ width: "70%" }}
-              className={classes.primaryButton}
+              className={`${classes.primaryButton} ${classes2.button}`}
               type="submit"
+              onClick={handleShowMessage}
             >
               COMPLETE
             </Button>
           </Grid>
         </Grid>
       </form>
-      {showError()}
-      {showMessage()}
+      {handleShowMessage()}
     </Container>
   );
 };

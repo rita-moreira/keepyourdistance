@@ -1,17 +1,22 @@
-import React from "react";
-import Head from "next/head";
+import React from 'react';
+import Head from 'next/head';
+import { Container, createStyles, Grid, makeStyles, Theme } from '@material-ui/core';
+import RegisterForm from '../components/auth/RegisterForm';
+import Logo from '../components/individual/Logo';
+import SwitchMode from '../components/navbar/SwitchMode';
+import { useStyles } from '../theme/theme';
 
-// components
-import RegisterForm from "../components/auth/RegisterForm";
-import Logo from "../components/individual/Logo";
-import SwitchMode from "../components/navbar/SwitchMode";
+const useStylesPage = makeStyles((theme: Theme) => createStyles({
+  size: {
+    width: '100%',
+    height: '100vh',
+  },
 
-// custom style
-import { useStyles } from "../theme/theme";
-import { Container, Grid } from "@material-ui/core";
+}));
 
 const Login: React.FC = () => {
   const classes = useStyles();
+  const classes2 = useStylesPage();
   return (
     <div>
       <Head>
@@ -19,10 +24,7 @@ const Login: React.FC = () => {
       </Head>
       <main className={classes.backgroundColor}>
         <div
-          style={{
-            width: "100%",
-            height: "100vh",
-          }}
+          className={classes2.size}
         >
           <Container maxWidth="lg">
             <Grid container spacing={3} justify="center" alignItems="center">

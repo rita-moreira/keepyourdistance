@@ -1,46 +1,64 @@
-import React from "react";
-import { Avatar, Card, CardContent, CardHeader, Link } from "@material-ui/core";
-import { Alert } from "@material-ui/lab";
+import React, { memo } from 'react';
+import { Avatar, Card, CardContent, CardHeader, createStyles, Link, makeStyles, Theme } from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
+import AddComment from './comment/AddComment';
+import Comments from './comment/Comments';
+import { CompletedAdminTasksProps } from '../../../interface/index';
 
-// components
-import AddComment from "./comment/AddComment";
-import Comments from "./comment/Comments";
+const useStylesPage = makeStyles((theme: Theme) => createStyles({
+  root: {
+    padding: '10px',
+    width: '45%',
+    display: 'inline-block',
+    textAlign: 'left',
+  },
+  avatar: {
+    width: '40px', height: '40px'
+  },
+  root2: {
+    textAlign: 'center', padding: '10px'
+  },
+  alert: {
+    color: 'white', backgroundColor: '#EF7D1D'
+  },
+}));
 
-const CompletedAdminTasks: React.FC<any> = ({ admintasks, mutate }: any) => {
+interface CompletedAdminTasksState {
+  admintasks: CompletedAdminTasksProps;
+  mutate: () => void;
+}
+
+const CompletedAdminTasks: React.FC<CompletedAdminTasksState> = ({ admintasks, mutate }: CompletedAdminTasksState) => {
+  const classes = useStylesPage();
   const currentTime = Date.now();
-  const completedAdminTasks = admintasks.map((task: any) => {
+  const completedAdminTasks = admintasks.map((task: CompletedAdminTasksProps) => {
     const diff: number = currentTime - Date.parse(task.createdAt);
     let date: string;
     if (diff > 86400e3) {
-      date = Math.floor(diff / 86400e3) + " days ago";
+      date = `${Math.floor(diff / 86400e3)} days ago`;
     } else if (diff > 3600e3 && diff < 86400e3) {
-      date = Math.floor(diff / 3600e3) + " hours ago";
+      date = `${Math.floor(diff / 3600e3)} hours ago`;
     } else if (diff > 60e3 && diff < 3600e3) {
-      date = Math.floor(diff / 60e3) + " minutes ago";
+      date = `${Math.floor(diff / 60e3)} minutes ago`;
     } else {
-      date = Math.floor(diff / 1e3) + " seconds ago";
+      date = `${Math.floor(diff / 1e3)} seconds ago`;
     }
 
     return (
       <div
         key={task._id}
-        style={{
-          padding: "10px",
-          width: "45%",
-          display: "inline-block",
-          textAlign: "left",
-        }}
+        className={classes.root}
       >
         <Card>
           <CardHeader
-            avatar={
+            avatar={(
               <Avatar
-                style={{ width: "40px", height: "40px" }}
+                className={classes.avatar}
                 src={task.completedBy.photo}
                 alt="profile photo"
               />
-            }
-            title={"TASK: " + task.title}
+            )}
+            title={`TASK: ${task.title}`}
             subheader={date}
           />
 
@@ -51,7 +69,9 @@ const CompletedAdminTasks: React.FC<any> = ({ admintasks, mutate }: any) => {
               variant="body2"
               color="textSecondary"
             >
-              {task.completedBy.username}: {task.comment}
+              {task.completedBy.username}
+              :
+              {task.comment}
             </Link>
           </CardContent>
           <AddComment id={task._id} mutate={mutate} />
@@ -61,20 +81,20 @@ const CompletedAdminTasks: React.FC<any> = ({ admintasks, mutate }: any) => {
     );
   });
   return (
-    <div style={{ textAlign: "center", padding: "10px" }}>
+    <div className={classes.root2}>
       {completedAdminTasks.length > 0 ? (
         completedAdminTasks
       ) : (
-        <Alert
-          variant="filled"
-          severity="info"
-          style={{ color: "white", backgroundColor: "#EF7D1D" }}
-        >
-          There are currently no mandatory tasks completed.
-        </Alert>
-      )}
+          <Alert
+            variant="filled"
+            severity="info"
+            className={classes.alert}
+          >
+            There are currently no mandatory tasks completed.
+          </Alert>
+        )}
     </div>
   );
 };
 
-export default CompletedAdminTasks;
+export default memo(CompletedAdminTasks);
